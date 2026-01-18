@@ -57,4 +57,19 @@ class TaskPolicy
     {
         return $this->view($user, $task);
     }
+
+    /**
+     * Determine whether the user can mark the task as completed.
+     * Only the assigned user can mark task as completed.
+     */
+    public function complete(User $user, Task $task): bool
+    {
+        // Admin can always complete tasks
+        if ($user->isAdmin()) {
+            return true;
+        }
+
+        // Only the assigned user can mark task as completed
+        return $task->assigned_to === $user->id;
+    }
 }

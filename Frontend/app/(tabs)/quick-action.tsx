@@ -35,14 +35,14 @@ const NOTE_TYPES = [
 	{ value: "other", label: "Khác", icon: "chatbubble-outline" },
 ];
 
-// Task types
+// Task types - Must match backend ENUM: CALL,MEETING,EMAIL,DEMO,FOLLOW_UP,NOTE,MEET,OTHER
 const TASK_TYPES = [
-	{ value: "call", label: "Gọi điện", icon: "call-outline" },
-	{ value: "meeting", label: "Gặp mặt", icon: "people-outline" },
-	{ value: "email", label: "Gửi email", icon: "mail-outline" },
-	{ value: "follow_up", label: "Follow-up", icon: "refresh-outline" },
-	{ value: "demo", label: "Demo", icon: "desktop-outline" },
-	{ value: "other", label: "Khác", icon: "checkbox-outline" },
+	{ value: "CALL", label: "Gọi điện", icon: "call-outline" },
+	{ value: "MEETING", label: "Gặp mặt", icon: "people-outline" },
+	{ value: "EMAIL", label: "Gửi email", icon: "mail-outline" },
+	{ value: "FOLLOW_UP", label: "Follow-up", icon: "refresh-outline" },
+	{ value: "DEMO", label: "Demo", icon: "desktop-outline" },
+	{ value: "OTHER", label: "Khác", icon: "checkbox-outline" },
 ];
 
 export default function QuickActionScreen() {
@@ -66,7 +66,7 @@ export default function QuickActionScreen() {
 
 	// Task form state
 	const [taskTitle, setTaskTitle] = useState("");
-	const [taskType, setTaskType] = useState("call");
+	const [taskType, setTaskType] = useState("CALL");
 	const [taskDueDate, setTaskDueDate] = useState("");
 	const [taskNote, setTaskNote] = useState("");
 	const [selectedLeadId, setSelectedLeadId] = useState<number | null>(null);
@@ -150,7 +150,7 @@ export default function QuickActionScreen() {
 		setCustomerSourceNote("");
 		setCustomerNote("");
 		setTaskTitle("");
-		setTaskType("call");
+		setTaskType("CALL");
 		setTaskDueDate("");
 		setTaskNote("");
 		setSelectedLeadId(null);
@@ -198,7 +198,7 @@ export default function QuickActionScreen() {
 				source: customerSource || undefined,
 				source_detail: customerSource === "other" ? customerSourceNote : undefined,
 				note: customerNote || undefined,
-				status: "LEAD",
+				status: "LEAD_NEW",
 			});
 			Alert.alert(t("common.success"), t("quickAction.customerAdded"));
 			handleCloseAction();
@@ -259,10 +259,10 @@ export default function QuickActionScreen() {
 				content: noteContent,
 				type: "normal",
 			});
-			// Also create an activity log
+			// Also create an activity log - Backend only accepts CALL, TASK, NOTE
 			await api.createActivity({
 				lead_id: noteLeadId,
-				type: noteType === "call" ? "CALL" : noteType === "meeting" ? "MEETING" : noteType === "email" ? "EMAIL" : "NOTE",
+				type: noteType === "call" ? "CALL" : "NOTE",
 				content: noteContent,
 				happened_at: new Date().toISOString(),
 			});

@@ -360,6 +360,8 @@ export default function TasksScreen() {
 		const typeConfig = getTaskTypeConfig(item.type);
 		const isOverdue = isOverdueTask(item);
 		const isDone = item.status === "DONE";
+		// Only assigned user can complete task
+		const canComplete = !isDone && item.assigned_to === user?.id;
 
 		return (
 			<TouchableOpacity
@@ -373,7 +375,7 @@ export default function TasksScreen() {
 				]}
 				onPress={() => router.push(`/task/${item.id}`)}
 				activeOpacity={0.7}>
-				{/* Checkbox */}
+				{/* Checkbox - Only show checkable state for assigned user */}
 				<TouchableOpacity
 					style={[
 						styles.checkbox,
@@ -382,8 +384,8 @@ export default function TasksScreen() {
 							backgroundColor: isDone ? colors.success : "transparent",
 						},
 					]}
-					onPress={() => !isDone && handleCompleteTask(item)}
-					disabled={isDone}>
+					onPress={() => canComplete && handleCompleteTask(item)}
+					disabled={!canComplete}>
 					{isDone && <Ionicons name="checkmark" size={16} color={colors.white} />}
 				</TouchableOpacity>
 
@@ -798,8 +800,8 @@ export default function TasksScreen() {
 								<TextInput label={t("tasks.notes")} placeholder={t("tasks.notesPlaceholder")} value={taskNotes} onChangeText={setTaskNotes} multiline numberOfLines={3} />
 							</View>
 
-							{/* Submit button */}
-							<Button title={isManager ? t("tasks.assignTask") : t("tasks.createTask")} onPress={handleCreateTask} loading={creating} style={styles.submitButton} />
+							{/* Spacer for bottom padding */}
+							<View style={{ height: 20 }} />
 						</ScrollView>
 					</KeyboardAvoidingView>
 				</SafeAreaView>

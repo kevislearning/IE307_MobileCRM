@@ -26,7 +26,7 @@ export default function LeadDetailScreen() {
 		{ value: "LEAD_NEW", label: t("customers.statusLeadNew"), color: "#6B7280" }, // Xám
 		{ value: "CONTACTED", label: t("customers.statusContacted"), color: "#60A5FA" }, // Xanh nhạt
 		{ value: "INTERESTED", label: t("customers.statusInterested"), color: "#3B82F6" }, // Xanh
-		{ value: "QUALIFIED", label: t("customers.statusQualified"), color: "#F59E0B" }, // Cam ⚠️
+		{ value: "QUALIFIED", label: t("customers.statusQualified"), color: "#F59E0B" }, // Cam 
 		{ value: "WON", label: t("customers.statusWon"), color: "#1E40AF" }, // Xanh đậm
 		{ value: "LOST", label: t("customers.statusLost"), color: "#EF4444" }, // Đỏ
 	];
@@ -115,7 +115,9 @@ export default function LeadDetailScreen() {
 	const fetchNotes = async () => {
 		try {
 			const response = await api.getNotes(Number(id));
-			setNotes((response as any).data || []);
+			// Handle both direct array and {data: [...]} format
+			const data = Array.isArray(response) ? response : (response as any).data || [];
+			setNotes(data);
 		} catch (error) {
 			console.error("Error fetching notes:", error);
 		}
@@ -803,7 +805,7 @@ export default function LeadDetailScreen() {
 									<Ionicons name="warning" size={16} color={colors.error} /> {t("tasks.overdue")} ({groupedTasks.overdue.length})
 								</Text>
 								{groupedTasks.overdue.map((task) => (
-									<TaskCard key={task.id} task={task} colors={colors} t={t} onComplete={() => handleCompleteTask(task.id)} onPress={() => router.push(`/task/${task.id}`)} taskTypeOptions={TASK_TYPE_OPTIONS} isOverdue />
+									<TaskCard key={task.id} task={task} colors={colors} t={t} onComplete={() => handleCompleteTask(task.id)} onPress={() => router.push(`/task/${task.id}`)} taskTypeOptions={TASK_TYPE_OPTIONS} isOverdue currentUserId={user?.id} />
 								))}
 							</>
 						)}
@@ -815,7 +817,7 @@ export default function LeadDetailScreen() {
 									<Ionicons name="today" size={16} color={colors.warning} /> {t("common.today")} ({groupedTasks.today.length})
 								</Text>
 								{groupedTasks.today.map((task) => (
-									<TaskCard key={task.id} task={task} colors={colors} t={t} onComplete={() => handleCompleteTask(task.id)} onPress={() => router.push(`/task/${task.id}`)} taskTypeOptions={TASK_TYPE_OPTIONS} />
+									<TaskCard key={task.id} task={task} colors={colors} t={t} onComplete={() => handleCompleteTask(task.id)} onPress={() => router.push(`/task/${task.id}`)} taskTypeOptions={TASK_TYPE_OPTIONS} currentUserId={user?.id} />
 								))}
 							</>
 						)}
@@ -827,7 +829,7 @@ export default function LeadDetailScreen() {
 									<Ionicons name="calendar" size={16} color={colors.info} /> {t("tasks.upcoming")} ({groupedTasks.upcoming.length})
 								</Text>
 								{groupedTasks.upcoming.map((task) => (
-									<TaskCard key={task.id} task={task} colors={colors} t={t} onComplete={() => handleCompleteTask(task.id)} onPress={() => router.push(`/task/${task.id}`)} taskTypeOptions={TASK_TYPE_OPTIONS} />
+									<TaskCard key={task.id} task={task} colors={colors} t={t} onComplete={() => handleCompleteTask(task.id)} onPress={() => router.push(`/task/${task.id}`)} taskTypeOptions={TASK_TYPE_OPTIONS} currentUserId={user?.id} />
 								))}
 							</>
 						)}
@@ -1054,10 +1056,13 @@ interface TaskCardProps {
 	taskTypeOptions: { value: string; label: string; icon: string }[];
 	isOverdue?: boolean;
 	isCompleted?: boolean;
+	currentUserId?: number;
 }
 
-const TaskCard: React.FC<TaskCardProps> = ({ task, colors, t, onComplete, onPress, taskTypeOptions, isOverdue, isCompleted }) => {
+const TaskCard: React.FC<TaskCardProps> = ({ task, colors, t, onComplete, onPress, taskTypeOptions, isOverdue, isCompleted, currentUserId }) => {
 	const typeInfo = taskTypeOptions.find((o) => o.value === task.type);
+	// Only show complete button for the assigned user
+	const canComplete = !isCompleted && onComplete && task.assigned_to === currentUserId;
 
 	return (
 		<TouchableOpacity
@@ -1096,7 +1101,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, colors, t, onComplete, onPres
 					{task.assigned_user && <Text style={[styles.taskAssignee, { color: colors.textLight }]}>{task.assigned_user.name}</Text>}
 				</View>
 			</View>
-			{!isCompleted && onComplete && (
+			{canComplete && (
 				<TouchableOpacity style={[styles.taskCheckbox, { borderColor: colors.border }]} onPress={onComplete}>
 					<Ionicons name="checkmark" size={18} color={colors.textLight} />
 				</TouchableOpacity>

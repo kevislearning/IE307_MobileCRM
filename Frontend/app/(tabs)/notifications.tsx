@@ -14,7 +14,7 @@ import { Loading, EmptyState } from "@/components/ui";
 const SCREEN_WIDTH = Dimensions.get("window").width;
 const SWIPE_THRESHOLD = 80;
 
-// Notification icon configuration
+// Notification icon config
 const NOTIFICATION_CONFIG: Record<string, { icon: string; color: string; bgColor: string }> = {
 	TASK_REMINDER: { icon: "alarm", color: "#F59E0B", bgColor: "#FEF3C7" },
 	TASK_OVERDUE: { icon: "alert-circle", color: "#EF4444", bgColor: "#FEE2E2" },
@@ -134,7 +134,7 @@ function SwipeableNotification({ item, colors, onPress, onMarkRead, onDelete, fo
 
 	// Get notification body/description
 	const getNotificationBody = (): string => {
-		// Use body if available, otherwise fall back to content
+		
 		if (item.body) return item.body;
 		if (item.content) return item.content;
 		return "";
@@ -257,7 +257,7 @@ export default function NotificationsScreen() {
 			}
 		}
 
-		// Navigate based on type and payload
+		// Navigate 
 		if (notification.payload) {
 			// Task-related notifications
 			if (["TASK", "TASK_REMINDER", "TASK_ASSIGNED", "TASK_OVERDUE"].includes(notification.type) && notification.payload.task_id) {

@@ -10,12 +10,11 @@ import { api } from "@/services/api";
 import { Opportunity, OpportunityStage } from "@/types";
 import { Loading, Badge, Button, TextInput } from "@/components/ui";
 
-const STAGE_OPTIONS: OpportunityStage[] = ["NEW", "QUALIFIED", "PROPOSAL", "NEGOTIATION", "WON", "LOST"];
+const STAGE_OPTIONS: OpportunityStage[] = ["PROSPECTING", "PROPOSAL", "NEGOTIATION", "WON", "LOST"];
 
 // Stage to probability mapping (same as backend)
 const STAGE_PROBABILITY: Record<OpportunityStage, number> = {
-	NEW: 10,
-	QUALIFIED: 30,
+	PROSPECTING: 20,
 	PROPOSAL: 50,
 	NEGOTIATION: 70,
 	WON: 100,
@@ -24,8 +23,7 @@ const STAGE_PROBABILITY: Record<OpportunityStage, number> = {
 
 // Stage colors for badges
 const STAGE_COLORS: Record<OpportunityStage, string> = {
-	NEW: "#6B7280", // Gray
-	QUALIFIED: "#3B82F6", // Blue
+	PROSPECTING: "#3B82F6", // Blue
 	PROPOSAL: "#F59E0B", // Orange
 	NEGOTIATION: "#8B5CF6", // Purple
 	WON: "#10B981", // Green
@@ -62,7 +60,7 @@ export default function OpportunityDetailScreen() {
 	useFocusEffect(
 		useCallback(() => {
 			fetchOpportunity();
-		}, [id])
+		}, [id]),
 	);
 
 	const handleRefresh = () => {
@@ -77,10 +75,8 @@ export default function OpportunityDetailScreen() {
 
 	const getStageLabel = (value: OpportunityStage) => {
 		switch (value) {
-			case "NEW":
-				return t("opportunities.stageNew");
-			case "QUALIFIED":
-				return t("opportunities.stageQualified");
+			case "PROSPECTING":
+				return t("opportunities.stageProspecting");
 			case "PROPOSAL":
 				return t("opportunities.stageProposal");
 			case "NEGOTIATION":

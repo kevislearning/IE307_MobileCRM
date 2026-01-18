@@ -12,12 +12,11 @@ import { api } from "@/services/api";
 import { Opportunity, Lead, OpportunityStage, OpportunityPipelineItem, OpportunityForecastItem } from "@/types";
 import { Loading, EmptyState, Button, TextInput, Badge } from "@/components/ui";
 
-const STAGE_OPTIONS: OpportunityStage[] = ["NEW", "QUALIFIED", "PROPOSAL", "NEGOTIATION", "WON", "LOST"];
+const STAGE_OPTIONS: OpportunityStage[] = ["PROSPECTING", "PROPOSAL", "NEGOTIATION", "WON", "LOST"];
 
 // Stage to probability mapping (same as backend)
 const STAGE_PROBABILITY: Record<OpportunityStage, number> = {
-	NEW: 10,
-	QUALIFIED: 30,
+	PROSPECTING: 20,
 	PROPOSAL: 50,
 	NEGOTIATION: 70,
 	WON: 100,
@@ -26,8 +25,7 @@ const STAGE_PROBABILITY: Record<OpportunityStage, number> = {
 
 // Stage colors for badges
 const STAGE_COLORS: Record<OpportunityStage, string> = {
-	NEW: "#6B7280", // Gray
-	QUALIFIED: "#3B82F6", // Blue
+	PROSPECTING: "#3B82F6", // Blue
 	PROPOSAL: "#F59E0B", // Orange
 	NEGOTIATION: "#8B5CF6", // Purple
 	WON: "#10B981", // Green
@@ -51,7 +49,7 @@ export default function OpportunitiesScreen() {
 	const [selectedLead, setSelectedLead] = useState<number | null>(null);
 	const [showLeadPicker, setShowLeadPicker] = useState(false);
 	const [leadSearchQuery, setLeadSearchQuery] = useState("");
-	const [stage, setStage] = useState<OpportunityStage>("NEW");
+	const [stage, setStage] = useState<OpportunityStage>("PROSPECTING");
 	const [estimatedValue, setEstimatedValue] = useState("");
 	const [currencyCode, setCurrencyCode] = useState("VND");
 	const [expectedCloseDate, setExpectedCloseDate] = useState("");
@@ -172,10 +170,8 @@ export default function OpportunitiesScreen() {
 
 	const getStageLabel = (value: OpportunityStage) => {
 		switch (value) {
-			case "NEW":
-				return t("opportunities.stageNew");
-			case "QUALIFIED":
-				return t("opportunities.stageQualified");
+			case "PROSPECTING":
+				return t("opportunities.stageProspecting");
 			case "PROPOSAL":
 				return t("opportunities.stageProposal");
 			case "NEGOTIATION":
@@ -200,8 +196,7 @@ export default function OpportunitiesScreen() {
 
 	const getOpportunitiesByStage = () => {
 		const counts: Record<OpportunityStage, number> = {
-			NEW: 0,
-			QUALIFIED: 0,
+			PROSPECTING: 0,
 			PROPOSAL: 0,
 			NEGOTIATION: 0,
 			WON: 0,

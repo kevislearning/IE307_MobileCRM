@@ -13,15 +13,14 @@ import { Loading, EmptyState } from "@/components/ui";
 
 // Stage colors matching opportunities page
 const STAGE_COLORS: Record<OpportunityStage, string> = {
-	NEW: "#6B7280",
-	QUALIFIED: "#3B82F6",
+	PROSPECTING: "#3B82F6",
 	PROPOSAL: "#F59E0B",
 	NEGOTIATION: "#8B5CF6",
 	WON: "#10B981",
 	LOST: "#EF4444",
 };
 
-const STAGE_ORDER: OpportunityStage[] = ["NEW", "QUALIFIED", "PROPOSAL", "NEGOTIATION", "WON"];
+const STAGE_ORDER: OpportunityStage[] = ["PROSPECTING", "PROPOSAL", "NEGOTIATION", "WON"];
 
 export default function DashboardScreen() {
 	const colorScheme = useColorScheme() ?? "light";
@@ -77,10 +76,8 @@ export default function DashboardScreen() {
 
 	const getStageLabel = (stage: OpportunityStage) => {
 		switch (stage) {
-			case "NEW":
-				return t("opportunities.stageNew");
-			case "QUALIFIED":
-				return t("opportunities.stageQualified");
+			case "PROSPECTING":
+				return t("opportunities.stageProspecting");
 			case "PROPOSAL":
 				return t("opportunities.stageProposal");
 			case "NEGOTIATION":

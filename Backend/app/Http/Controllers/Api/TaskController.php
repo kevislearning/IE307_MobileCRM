@@ -115,17 +115,22 @@ class TaskController extends Controller
         // Create notification for task assignment (if assigned to different user)
         $assignedTo = $data['assigned_to'];
         if ($assignedTo && $assignedTo != $user->id) {
-            Notification::create([
-                'user_id' => $assignedTo,
-                'type' => Notification::TYPE_TASK_ASSIGNED,
-                'content' => "Bạn được giao công việc: {$task->title}",
-                'payload' => [
-                    'task_id' => $task->id,
-                    'lead_id' => $data['lead_id'] ?? null,
-                    'assigned_by' => $user->id,
-                    'assigned_by_name' => $user->name,
-                ],
-            ]);
+            try {
+                Notification::create([
+                    'user_id' => $assignedTo,
+                    'type' => Notification::TYPE_TASK_ASSIGNED,
+                    'content' => "Bạn được giao công việc: {$task->title}",
+                    'payload' => [
+                        'task_id' => $task->id,
+                        'lead_id' => $data['lead_id'] ?? null,
+                        'assigned_by' => $user->id,
+                        'assigned_by_name' => $user->name,
+                    ],
+                ]);
+            } catch (\Exception $e) {
+                // Log the error but don't fail the task creation
+                \Log::warning('Failed to create task assignment notification: ' . $e->getMessage());
+            }
         }
 
         // Create activity for task assignment if lead_id exists
@@ -170,7 +175,10 @@ class TaskController extends Controller
         $tagIds = $data['tag_ids'] ?? null;
         unset($data['tag_ids']);
 
-        if (($data['status'] ?? null) === Task::STATUS_DONE && !$task->completed_at) {
+        // Check if user is trying to mark task as completed
+        if (($data['status'] ?? null) === Task::STATUS_DONE && $task->status !== Task::STATUS_DONE) {
+            // Only assigned user can mark task as completed
+            $this->authorize('complete', $task);
             $data['completed_at'] = now();
         }
 

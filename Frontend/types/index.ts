@@ -72,11 +72,12 @@ export interface Lead {
 }
 
 export const LEAD_STATUS_OPTIONS: { value: LeadStatus; label: string; color: string }[] = [
-	{ value: "LEAD", label: "Lead", color: "#6B7280" },
-	{ value: "CONTACTED", label: "Đã liên hệ", color: "#3B82F6" },
-	{ value: "CARING", label: "Đang chăm sóc", color: "#F59E0B" },
-	{ value: "PURCHASED", label: "Đã mua", color: "#10B981" },
-	{ value: "NO_NEED", label: "Không nhu cầu", color: "#EF4444" },
+	{ value: "LEAD_NEW", label: "Lead mới", color: "#6B7280" },
+	{ value: "CONTACTED", label: "Đã liên hệ", color: "#60A5FA" },
+	{ value: "INTERESTED", label: "Quan tâm", color: "#3B82F6" },
+	{ value: "QUALIFIED", label: "Có nhu cầu", color: "#F59E0B" },
+	{ value: "WON", label: "Đã mua", color: "#1E40AF" },
+	{ value: "LOST", label: "Không nhu cầu", color: "#EF4444" },
 ];
 
 // Task types
@@ -215,7 +216,7 @@ export interface DashboardAnalytics {
 	notifications_unread: number;
 }
 
-export type OpportunityStage = "NEW" | "QUALIFIED" | "PROPOSAL" | "NEGOTIATION" | "WON" | "LOST";
+export type OpportunityStage = "PROSPECTING" | "PROPOSAL" | "NEGOTIATION" | "WON" | "LOST";
 
 export interface OpportunityLineItem {
 	id: number;

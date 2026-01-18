@@ -65,7 +65,7 @@ class NoteController extends Controller
         Activity::create([
             'type' => 'NOTE',
             'title' => $request->title,
-            'content' => "Thêm ghi chú: {$request->title}",
+            'content' => $request->content,
             'lead_id' => $lead->id,
             'user_id' => $user->id,
             'happened_at' => now(),

@@ -78,7 +78,7 @@ export default function TabLayout() {
 					href: isManager ? "/opportunities" : null,
 				}}
 			/>
-			{/* Quick Action tab - Only visible for Sales */}
+			{/* Quick Action tab */}
 			<Tabs.Screen
 				name="quick-action"
 				options={{
@@ -102,11 +102,11 @@ export default function TabLayout() {
 					tabBarIcon: ({ color, focused }) => <Ionicons name={focused ? "person" : "person-outline"} size={22} color={color} />,
 				}}
 			/>
-			{/* Hidden screens for navigation */}
+			{/* Hidden navigation */}
 			<Tabs.Screen
 				name="explore"
 				options={{
-					href: null, // Hide from tab bar
+					href: null, 
 				}}
 			/>
 		</Tabs>

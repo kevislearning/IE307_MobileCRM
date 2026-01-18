@@ -13,18 +13,17 @@ import { Loading, EmptyState, Button } from "@/components/ui";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
-// Status config with colors matching spec from States.txt
 // 1. Lead mới (xám) → 2. Đã liên hệ (xanh nhạt) → 3. Quan tâm (xanh) → 4. Có nhu cầu (cam) → 5. Đã mua (xanh đậm) → 6. Không nhu cầu (đỏ)
 const STATUS_CONFIG: Record<LeadStatus, { color: string; bgColor: string }> = {
 	LEAD_NEW: { color: "#6B7280", bgColor: "#6B728015" }, // Xám - Lead mới (chưa có tương tác)
 	CONTACTED: { color: "#60A5FA", bgColor: "#60A5FA15" }, // Xanh nhạt - Đã liên hệ (có phản hồi, chưa rõ nhu cầu)
 	INTERESTED: { color: "#3B82F6", bgColor: "#3B82F615" }, // Xanh - Quan tâm/Đang chăm sóc (trả lời đều, cần follow-up)
-	QUALIFIED: { color: "#F59E0B", bgColor: "#F59E0B15" }, // Cam - Có nhu cầu (yêu cầu báo giá, hẹn demo) ⚠️ Quan trọng
+	QUALIFIED: { color: "#F59E0B", bgColor: "#F59E0B15" }, // Cam - Có nhu cầu (yêu cầu báo giá, hẹn demo)
 	WON: { color: "#1E40AF", bgColor: "#1E40AF15" }, // Xanh đậm - Đã mua (deal chốt)
 	LOST: { color: "#EF4444", bgColor: "#EF444415" }, // Đỏ - Không có nhu cầu (từ chối)
 };
 
-// Priority config
+// Priority
 const PRIORITY_CONFIG: Record<LeadPriority, { color: string; bgColor: string }> = {
 	HIGH: { color: "#EF4444", bgColor: "#EF444415" },
 	MEDIUM: { color: "#F59E0B", bgColor: "#F59E0B15" },
@@ -123,7 +122,7 @@ export default function CustomersScreen() {
 		fetchLeads(true);
 	};
 
-	// Filter sheet animations
+	// Filter sheet
 	const openFilterSheet = () => {
 		setShowFilterSheet(true);
 		Animated.spring(filterSheetAnim, {
@@ -297,7 +296,7 @@ export default function CustomersScreen() {
 					{isOverdue && (
 						<View style={[styles.warningBadge, { backgroundColor: colors.warning + "20" }]}>
 							<Ionicons name="warning" size={12} color={colors.warning} />
-							<Text style={[styles.warningText, { color: colors.warning }]}>{item.follow_up_due ? t("customers.followUpDue") : t("customers.notFollowedUp", { days: item.days_since_contact })}</Text>
+							<Text style={[styles.warningText, { color: colors.warning }]}>{item.follow_up_due ? t("customers.followUpDue") : t("customers.notFollowedUp", { days: item.days_since_contact ?? 0 })}</Text>
 						</View>
 					)}
 				</View>

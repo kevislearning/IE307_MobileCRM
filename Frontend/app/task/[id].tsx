@@ -15,7 +15,7 @@ export default function TaskDetailScreen() {
 	const { id } = useLocalSearchParams();
 	const colorScheme = useColorScheme() ?? "light";
 	const colors = Colors[colorScheme];
-	const { isManager } = useAuth();
+	const { user, isManager } = useAuth();
 	const { t } = useTranslation();
 
 	const [task, setTask] = useState<Task | null>(null);
@@ -41,7 +41,7 @@ export default function TaskDetailScreen() {
 	useFocusEffect(
 		useCallback(() => {
 			fetchTaskDetails();
-		}, [id])
+		}, [id]),
 	);
 
 	const handleRefresh = () => {
@@ -143,18 +143,18 @@ export default function TaskDetailScreen() {
 						<Badge label={status.label} color={status.color} />
 					</View>
 
-				<Text style={[styles.taskTitle, { color: colors.text }]}>{task.title}</Text>
+					<Text style={[styles.taskTitle, { color: colors.text }]}>{task.title}</Text>
 
-				{task.description && <Text style={[styles.taskDescription, { color: colors.textSecondary }]}>{task.description}</Text>}
+					{task.description && <Text style={[styles.taskDescription, { color: colors.textSecondary }]}>{task.description}</Text>}
 
-				{(task.tags || []).length > 0 && (
-					<View style={styles.tagRow}>
-						{task.tags?.map((tag) => (
-							<Badge key={tag.id} text={tag.name} />
-						))}
-					</View>
-				)}
-			</View>
+					{(task.tags || []).length > 0 && (
+						<View style={styles.tagRow}>
+							{task.tags?.map((tag) => (
+								<Badge key={tag.id} text={tag.name} />
+							))}
+						</View>
+					)}
+				</View>
 
 				{/* Details */}
 				<View style={[styles.detailsCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
@@ -267,8 +267,8 @@ export default function TaskDetailScreen() {
 					</View>
 				)}
 
-				{/* Complete button */}
-				{task.status !== "DONE" && (
+				{/* Complete button - Only show for assigned user */}
+				{task.status !== "DONE" && task.assigned_to === user?.id && (
 					<View style={styles.actionContainer}>
 						<Button title={t("tasks.markComplete")} onPress={handleComplete} loading={completing} icon={<Ionicons name="checkmark-circle" size={20} color={colors.white} />} />
 					</View>
