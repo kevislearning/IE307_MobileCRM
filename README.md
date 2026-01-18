@@ -1,11 +1,12 @@
 Installation & Setup Guide
 
 Prerequisites
-PHP >= 8.1, Composer
-Node.js >= 18 (LTS), npm/yarn
-MySQL Database
-Expo Go
-XAMPP >=3.3.0
+- **PHP** >= 8.1
+- **Composer**
+- **Node.js** >= 18 (LTS) & **npm** or **yarn**
+- **MySQL Database**
+- **XAMPP** >= 3.3.0 (for Apache & MySQL)
+- **Expo Go** 
 
 - Navigate to the backend directory
 cd Backend (terminal)
@@ -31,4 +32,5 @@ On terminal, write php artisan serve --host=0.0.0.0 --port=8000 and enter
 Frontend Setup
 
 cd Frontend -> npm install -> npx expo start (Run on expo go)
+
 
