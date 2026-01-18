@@ -7,7 +7,7 @@ Prerequisites
 - **MySQL Database**
 - **XAMPP** >= 3.3.0 (for Apache & MySQL)
 - **Expo Go** 
-
+## Setup Backend
 - Navigate to the backend directory
 cd Backend (terminal)
 
@@ -29,8 +29,9 @@ Turn on XAMPP Control Panel, Start Apache and MySQL
 On terminal, write php artisan serve --host=0.0.0.0 --port=8000 and enter
 
 
-Frontend Setup
+## Frontend Setup
 
 cd Frontend -> npm install -> npx expo start (Run on expo go)
+
 
 
