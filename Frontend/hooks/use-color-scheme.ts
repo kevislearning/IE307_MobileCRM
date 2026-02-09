@@ -1,6 +1,6 @@
-// Re-export the app color scheme hook from ThemeContext
-// This allows all existing components to work without changes
+// Re-export hook color scheme của ứng dụng từ ThemeContext
+// Cho phép các component hiện tại hoạt động mà không cần thay đổi
 export { useAppColorScheme as useColorScheme } from "@/contexts/ThemeContext";
 
-// Export the system hook as well for direct access if needed
+// Export hook system nếu cần truy cập trực tiếp
 export { useColorScheme as useSystemColorScheme } from "react-native";

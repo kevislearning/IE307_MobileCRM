@@ -13,7 +13,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command(CheckTaskDueCommand::class)->everyFiveMinutes();
         
-        // Check no follow-up leads and overdue tasks daily at 8:00 AM
+        // kiểm tra follow up và task quá hạn lúc 8h
         $schedule->command(CheckNoFollowUp::class)->dailyAt('08:00');
     }
 

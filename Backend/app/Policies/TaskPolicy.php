@@ -18,19 +18,19 @@ class TaskPolicy
             return true;
         }
         
-        // User is assigned the task
+        // User được giao task này
         if ($task->assigned_to === $user->id) {
             return true;
         }
 
-        // Manager can view tasks of team members
+        // Manager có thể xem task của thành viên trong team
         if ($user->isOwner()) {
-            // Check team-based access
+            // Kiểm tra quyền truy cập theo team
             if ($task->team_id && $task->team_id === $user->team_id) {
                 return true;
             }
             
-            // Check manager-based access
+            // Kiểm tra quyền truy cập theo manager
             if ($task->assigned_to) {
                 $assignee = User::find($task->assigned_to);
                 if ($assignee && $assignee->manager_id === $user->id) {
@@ -44,7 +44,7 @@ class TaskPolicy
 
     public function create(User $user): bool
     {
-        // All authenticated users can create tasks
+        // Tất cả user đã đăng nhập đều có thể tạo task
         return $user->isAdmin() || $user->isOwner() || $user->isStaff();
     }
 
@@ -59,17 +59,17 @@ class TaskPolicy
     }
 
     /**
-     * Determine whether the user can mark the task as completed.
-     * Only the assigned user can mark task as completed.
+     * Xác định user có thể đánh dấu task hoàn thành không.
+     * Chỉ user được giao mới có thể đánh dấu task hoàn thành.
      */
     public function complete(User $user, Task $task): bool
     {
-        // Admin can always complete tasks
+        // Admin luôn có thể hoàn thành task
         if ($user->isAdmin()) {
             return true;
         }
 
-        // Only the assigned user can mark task as completed
+        // Chỉ user được giao mới có thể đánh dấu task hoàn thành
         return $task->assigned_to === $user->id;
     }
 }

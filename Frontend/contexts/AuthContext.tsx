@@ -20,7 +20,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 	const [user, setUser] = useState<User | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
 
-	// Handle auth failure (token expired and refresh failed)
+	// Xử lý xác thực thất bại (token hết hạn và làm mới thất bại)
 	const handleAuthFailure = useCallback(async () => {
 		console.log("Auth failure - clearing session");
 		await storage.clearAll();
@@ -28,7 +28,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 	}, []);
 
 	useEffect(() => {
-		// Set the auth failure callback for API client
+		// Thiết lập callback xác thực thất bại cho API client
 		api.setOnAuthFailure(handleAuthFailure);
 		checkAuth();
 	}, [handleAuthFailure]);

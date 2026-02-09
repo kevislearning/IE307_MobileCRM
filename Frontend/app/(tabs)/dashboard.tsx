@@ -11,7 +11,7 @@ import { api } from "@/services/api";
 import { DashboardAnalytics, OpportunityStage } from "@/types";
 import { Loading, EmptyState } from "@/components/ui";
 
-// Stage colors matching opportunities page
+// Màu giai đoạn tương ứng với trang opportunities
 const STAGE_COLORS: Record<OpportunityStage, string> = {
 	PROSPECTING: "#3B82F6",
 	PROPOSAL: "#F59E0B",
@@ -91,7 +91,7 @@ export default function DashboardScreen() {
 		}
 	};
 
-	// Sort pipeline by stage order
+	// Sắp xếp pipeline theo thứ tự giai đoạn
 	const getSortedPipeline = () => {
 		if (!data?.pipeline_by_stage) return [];
 		return [...data.pipeline_by_stage].sort((a, b) => {
@@ -278,7 +278,7 @@ const styles = StyleSheet.create({
 		marginBottom: Spacing.lg,
 	},
 
-	// Overview Section
+	// Phần Tổng quan
 	overviewSection: {
 		marginBottom: Spacing.lg,
 	},
@@ -314,7 +314,7 @@ const styles = StyleSheet.create({
 		fontWeight: "bold",
 	},
 
-	// Section Card
+	// Thẻ mục
 	sectionCard: {
 		borderRadius: BorderRadius.lg,
 		borderWidth: 1,
@@ -335,7 +335,7 @@ const styles = StyleSheet.create({
 		fontSize: FontSize.sm,
 	},
 
-	// Pipeline Bar
+	// Thanh Pipeline
 	pipelineBar: {
 		flexDirection: "row",
 		height: 8,
@@ -347,7 +347,7 @@ const styles = StyleSheet.create({
 		height: "100%",
 	},
 
-	// Pipeline List
+	// Danh sách Pipeline
 	pipelineList: {
 		gap: Spacing.xs,
 	},
@@ -392,7 +392,7 @@ const styles = StyleSheet.create({
 		fontSize: FontSize.xs,
 	},
 
-	// Bottleneck Card
+	// Thẻ điểm nghẽ
 	bottleneckCard: {
 		borderRadius: BorderRadius.lg,
 		borderWidth: 1,
@@ -418,7 +418,7 @@ const styles = StyleSheet.create({
 		fontSize: FontSize.sm,
 	},
 
-	// Sales Performance
+	// Hiệu suất bán hàng
 	salesHeader: {
 		flexDirection: "row",
 		paddingVertical: Spacing.sm,
@@ -465,7 +465,7 @@ const styles = StyleSheet.create({
 		textAlign: "right",
 	},
 
-	// Quick Stats
+	// Thống kê nhanh
 	quickStatsGrid: {
 		flexDirection: "row",
 		flexWrap: "wrap",

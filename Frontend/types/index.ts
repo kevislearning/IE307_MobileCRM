@@ -1,4 +1,4 @@
-// User types
+// Các kiểu dữ liệu User
 export type UserRole = "admin" | "owner" | "staff";
 
 export interface User {
@@ -16,7 +16,7 @@ export interface User {
 	updated_at: string;
 }
 
-// Lead (Customer) types
+// Các kiểu dữ liệu Lead (Khách hàng)
 // lead_new, contacted, interested, qualified, won, lost
 export type LeadStatus = "LEAD_NEW" | "CONTACTED" | "INTERESTED" | "QUALIFIED" | "WON" | "LOST";
 export type LeadPriority = "LOW" | "MEDIUM" | "HIGH";
@@ -80,7 +80,7 @@ export const LEAD_STATUS_OPTIONS: { value: LeadStatus; label: string; color: str
 	{ value: "LOST", label: "Không nhu cầu", color: "#EF4444" },
 ];
 
-// Task types
+// Các kiểu dữ liệu Task (Công việc)
 export type TaskStatus = "IN_PROGRESS" | "DONE" | "OVERDUE";
 export type TaskType = "CALL" | "MEETING" | "FOLLOW_UP" | "DEMO" | "OTHER";
 export type TaskPriority = "LOW" | "MEDIUM" | "HIGH";
@@ -193,21 +193,21 @@ export interface SalesPerformance {
 }
 
 export interface DashboardAnalytics {
-	// Overview
+	// Tổng quan
 	total_pipeline_value: number;
 	forecast_revenue: number;
 	forecast_this_month: number;
 
-	// Pipeline by stage
+	// Pipeline theo giai đoạn
 	pipeline_by_stage: OpportunityPipelineItem[];
 
-	// Bottleneck
+	// Điểm nghẽ
 	bottleneck: BottleneckData | null;
 
-	// Sales performance
+	// Hiệu suất bán hàng
 	sales_performance: SalesPerformance[];
 
-	// Legacy metrics
+	// Các chỉ số cũ
 	leads_total: number;
 	leads_uncontacted: number;
 	leads_stale_7d: number;
@@ -260,7 +260,7 @@ export interface Opportunity {
 	updated_at: string;
 }
 
-// Activity types
+// Các kiểu dữ liệu Activity (Hoạt động)
 export type ActivityType = "CALL" | "TASK" | "NOTE";
 
 export interface Activity {
@@ -275,7 +275,7 @@ export interface Activity {
 	created_at: string;
 }
 
-// Note types
+// Các kiểu dữ liệu Note (Ghi chú)
 export type NoteType = "normal" | "manager";
 
 export interface Note {
@@ -290,17 +290,17 @@ export interface Note {
 	updated_at: string;
 }
 
-// Notification types
+// Các kiểu dữ liệu Notification (Thông báo)
 export type NotificationType =
-	| "TASK_REMINDER" // Task deadline approaching
-	| "TASK_OVERDUE" // Task overdue
-	| "TASK_ASSIGNED" // Task assigned to you
-	| "LEAD_ASSIGNED" // Customer assigned to you
-	| "NO_FOLLOW_UP" // Customer not followed up (warning)
-	| "OPPORTUNITY_STAGE" // Opportunity stage changed
-	| "DEAL_WON" // Deal won
-	| "DEAL_LOST" // Deal lost
-	// Legacy types for backward compatibility
+	| "TASK_REMINDER" // Nhắc nhở task sắp đến hạn
+	| "TASK_OVERDUE" // Task quá hạn
+	| "TASK_ASSIGNED" // Task được giao cho bạn
+	| "LEAD_ASSIGNED" // Khách hàng được giao cho bạn
+	| "NO_FOLLOW_UP" // Khách hàng chưa được follow-up (cảnh báo)
+	| "OPPORTUNITY_STAGE" // Giai đoạn cơ hội thay đổi
+	| "DEAL_WON" // Deal thành công
+	| "DEAL_LOST" // Deal thất bại
+	// Các loại cũ để tương thích ngược
 	| "LEAD"
 	| "TASK"
 	| "SYSTEM";
@@ -311,7 +311,7 @@ export interface AppNotification {
 	title: string;
 	body: string;
 	type_label?: string;
-	content: string; // Legacy field, use body instead
+	content: string; // Trường cũ, sử dụng body thay thế
 	related_type?: "customer" | "task" | "opportunity";
 	related_id?: number;
 	payload?: {

@@ -26,7 +26,7 @@ class NotificationController extends Controller
             abort(403, 'Unauthorized access to this notification.');
         }
 
-        // auto mark as read when opened by owner
+        // Tự động đánh dấu đã đọc khi owner mở
         if ($notification->user_id === $user->id && !$notification->is_read) {
             $notification->update(['is_read' => true]);
         }
@@ -129,7 +129,7 @@ class NotificationController extends Controller
 
         $leadQuery = Lead::query();
         if ($user->isAdmin()) {
-            // no restrictions
+            // không giới hạn
         } elseif ($user->isOwner()) {
             $teamIds = $user->teamMembers()->pluck('id')->toArray();
             $leadQuery->where(function($q) use ($user, $teamIds) {

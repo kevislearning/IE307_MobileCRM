@@ -20,12 +20,12 @@ class CheckTaskDueCommand extends Command
         $today = $now->toDateString();
         $soon = $now->copy()->addHours(3);
 
-        // Mark overdue
+        // Đánh dấu quá hạn
         Task::whereDate('due_date', '<', $today)
             ->where('status', '!=', Task::STATUS_DONE)
             ->update(['status' => Task::STATUS_OVERDUE]);
 
-        // Notify tasks due within next 3h, not done
+        // Thông báo task sắp đến hạn
         $dueSoonTasks = Task::where('status', Task::STATUS_IN_PROGRESS)
             ->whereBetween('due_date', [$today, $soon->toDateString()])
             ->get();

@@ -20,7 +20,7 @@ export default function LeadDetailScreen() {
 	const { isManager, user } = useAuth();
 	const { t } = useTranslation();
 
-	// Status options using translation - theo States.txt
+	// Các tùy chọn trạng thái sử dụng dịch - theo States.txt
 	// 1. Lead mới → 2. Đã liên hệ → 3. Quan tâm → 4. Có nhu cầu → 5. Đã mua → 6. Không nhu cầu
 	const STATUS_OPTIONS: { value: LeadStatus; label: string; color: string }[] = [
 		{ value: "LEAD_NEW", label: t("customers.statusLeadNew"), color: "#6B7280" }, // Xám
@@ -31,14 +31,14 @@ export default function LeadDetailScreen() {
 		{ value: "LOST", label: t("customers.statusLost"), color: "#EF4444" }, // Đỏ
 	];
 
-	// Company size options
+	// Các tùy chọn kích thước công ty
 	const COMPANY_SIZE_OPTIONS: { value: CompanySize; label: string }[] = [
 		{ value: "small", label: t("customers.companySizeSmall") },
 		{ value: "medium", label: t("customers.companySizeMedium") },
 		{ value: "enterprise", label: t("customers.companySizeEnterprise") },
 	];
 
-	// Industry options
+	// Các tùy chọn ngành nghề
 	const INDUSTRY_OPTIONS: { value: Industry; label: string }[] = [
 		{ value: "education", label: t("customers.industryEducation") },
 		{ value: "retail", label: t("customers.industryRetail") },
@@ -49,7 +49,7 @@ export default function LeadDetailScreen() {
 		{ value: "other", label: t("customers.industryOther") },
 	];
 
-	// Task type options
+	// Các tùy chọn loại task
 	const TASK_TYPE_OPTIONS: { value: TaskType; label: string; icon: string }[] = [
 		{ value: "CALL", label: t("tasks.typeCall"), icon: "call" },
 		{ value: "MEETING", label: t("tasks.typeMeeting"), icon: "people" },
@@ -58,7 +58,7 @@ export default function LeadDetailScreen() {
 		{ value: "OTHER", label: t("tasks.typeOther"), icon: "ellipsis-horizontal" },
 	];
 
-	// Task priority options
+	// Các tùy chọn độ ưu tiên task
 	const TASK_PRIORITY_OPTIONS: { value: TaskPriority; label: string; color: string }[] = [
 		{ value: "LOW", label: t("customers.priorityLow"), color: "#6B7280" },
 		{ value: "MEDIUM", label: t("customers.priorityMedium"), color: "#F59E0B" },
@@ -73,12 +73,12 @@ export default function LeadDetailScreen() {
 	const [refreshing, setRefreshing] = useState(false);
 	const [activeTab, setActiveTab] = useState<TabType>("info");
 
-	// Note form state
+	// Trạng thái form ghi chú
 	const [newNote, setNewNote] = useState("");
 	const [noteType, setNoteType] = useState<"normal" | "manager">("normal");
 	const [savingNote, setSavingNote] = useState(false);
 
-	// Task form state
+	// Trạng thái form task
 	const [showTaskModal, setShowTaskModal] = useState(false);
 	const [taskTitle, setTaskTitle] = useState("");
 	const [taskType, setTaskType] = useState<TaskType>("FOLLOW_UP");
@@ -86,18 +86,18 @@ export default function LeadDetailScreen() {
 	const [taskDueDate, setTaskDueDate] = useState("");
 	const [savingTask, setSavingTask] = useState(false);
 
-	// Activity form state
+	// Trạng thái form hoạt động
 	const [showActivityModal, setShowActivityModal] = useState(false);
 	const [activityType, setActivityType] = useState<"CALL" | "NOTE">("CALL");
 	const [activityContent, setActivityContent] = useState("");
 	const [savingActivity, setSavingActivity] = useState(false);
 
-	// Manager-specific states
+	// Trạng thái dành riêng cho Manager
 	const [teamMembers, setTeamMembers] = useState<User[]>([]);
 	const [showAssignModal, setShowAssignModal] = useState(false);
 	const [assigning, setAssigning] = useState(false);
 
-	// Data fetching functions
+	// Các hàm lấy dữ liệu
 	const fetchLeadDetails = async (isRefresh = false) => {
 		try {
 			if (!isRefresh) setLoading(true);
@@ -115,7 +115,7 @@ export default function LeadDetailScreen() {
 	const fetchNotes = async () => {
 		try {
 			const response = await api.getNotes(Number(id));
-			// Handle both direct array and {data: [...]} format
+			// Xử lý cả mảng trực tiếp và định dạng {data: [...]}
 			const data = Array.isArray(response) ? response : (response as any).data || [];
 			setNotes(data);
 		} catch (error) {
@@ -170,13 +170,13 @@ export default function LeadDetailScreen() {
 		fetchTasks();
 	};
 
-	// === ACTION HANDLERS ===
+	// === CÁC XỬ LÝ HÀNH ĐỘNG ===
 
-	// Quick call action
+	// Gọi nhanh
 	const handleCall = async () => {
 		if (lead?.phone_number) {
 			try {
-				// Log the call activity
+				// Ghi log hoạt động cuộc gọi
 				await api.createActivity({
 					lead_id: lead.id,
 					type: "CALL",
@@ -191,13 +191,13 @@ export default function LeadDetailScreen() {
 		}
 	};
 
-	// Status change
+	// Thay đổi trạng thái
 	const handleStatusChange = async (newStatus: LeadStatus) => {
 		try {
 			await api.updateLead(Number(id), { status: newStatus });
 			setLead((prev) => (prev ? { ...prev, status: newStatus } : null));
 
-			// Log status change as activity
+			// Ghi log thay đổi trạng thái như hoạt động
 			await api.createActivity({
 				lead_id: Number(id),
 				type: "NOTE",
@@ -212,7 +212,7 @@ export default function LeadDetailScreen() {
 		}
 	};
 
-	// Assign sales (Manager only)
+	// Giao nhân viên bán hàng (Chỉ Manager)
 	const handleAssignSales = async (ownerId: number) => {
 		setAssigning(true);
 		try {
@@ -238,7 +238,7 @@ export default function LeadDetailScreen() {
 		}
 	};
 
-	// Add note
+	// Thêm ghi chú
 	const handleAddNote = async () => {
 		if (!newNote.trim()) return;
 
@@ -260,7 +260,7 @@ export default function LeadDetailScreen() {
 		}
 	};
 
-	// Add activity
+	// Thêm hoạt động
 	const handleAddActivity = async () => {
 		if (!activityContent.trim()) return;
 
@@ -283,7 +283,7 @@ export default function LeadDetailScreen() {
 		}
 	};
 
-	// Add task
+	// Thêm task
 	const handleAddTask = async () => {
 		if (!taskTitle.trim() || !taskDueDate) {
 			Alert.alert(t("common.error"), t("tasks.enterTaskTitle"));
@@ -311,18 +311,18 @@ export default function LeadDetailScreen() {
 		}
 	};
 
-	// Complete task
+	// Hoàn thành task
 	const handleCompleteTask = async (taskId: number) => {
 		try {
 			await api.updateTask(taskId, { status: "DONE" });
 			fetchTasks();
-			fetchActivities(); // Task completion should show in activities
+			fetchActivities(); // Hoàn thành task sẽ hiển thị trong hoạt động
 		} catch (error: any) {
 			Alert.alert(t("common.error"), error.message);
 		}
 	};
 
-	// === HELPER FUNCTIONS ===
+	// === CÁC HÀM HỖ TRỢ ===
 	const getStatusColor = (status: string) => {
 		return STATUS_OPTIONS.find((s) => s.value === status)?.color || colors.textSecondary;
 	};
@@ -349,7 +349,7 @@ export default function LeadDetailScreen() {
 		return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(value);
 	};
 
-	// Group tasks by status
+	// Nhóm tasks theo trạng thái
 	const groupedTasks = useMemo(() => {
 		const overdue: Task[] = [];
 		const today: Task[] = [];
@@ -376,9 +376,9 @@ export default function LeadDetailScreen() {
 		return { overdue, today, upcoming };
 	}, [tasks]);
 
-	// Generate timeline from activities
+	// Tạo timeline từ các hoạt động
 	const timelineItems = useMemo(() => {
-		// Merge activities, completed tasks, status changes
+		// Gộp các hoạt động, tasks hoàn thành, thay đổi trạng thái
 		const items = [...activities].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 		return items;
 	}, [activities]);
@@ -409,7 +409,7 @@ export default function LeadDetailScreen() {
 		}
 	};
 
-	// === LOADING STATE ===
+	// === TRẠNG THÁI ĐANG TẢI ===
 	if (loading) {
 		return (
 			<SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
@@ -426,7 +426,7 @@ export default function LeadDetailScreen() {
 		);
 	}
 
-	// Tab definitions
+	// Định nghĩa các tab
 	const tabs: { id: TabType; label: string }[] = [
 		{ id: "info", label: t("customers.tabInfo") },
 		{ id: "activities", label: t("customers.tabActivities") },
@@ -1046,7 +1046,7 @@ export default function LeadDetailScreen() {
 	);
 }
 
-// Task Card Component
+// Component Thẻ Task
 interface TaskCardProps {
 	task: Task;
 	colors: any;
@@ -1061,7 +1061,7 @@ interface TaskCardProps {
 
 const TaskCard: React.FC<TaskCardProps> = ({ task, colors, t, onComplete, onPress, taskTypeOptions, isOverdue, isCompleted, currentUserId }) => {
 	const typeInfo = taskTypeOptions.find((o) => o.value === task.type);
-	// Only show complete button for the assigned user
+	// Chỉ hiển nút hoàn thành cho user được giao
 	const canComplete = !isCompleted && onComplete && task.assigned_to === currentUserId;
 
 	return (
@@ -1182,7 +1182,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 	},
 
-	// Info Tab
+	// Tab Thông tin
 	infoTab: {
 		padding: Spacing.lg,
 	},
@@ -1248,7 +1248,7 @@ const styles = StyleSheet.create({
 		fontWeight: "500",
 	},
 
-	// Activities Tab
+	// Tab Hoạt động
 	activitiesTab: {
 		padding: Spacing.lg,
 	},
@@ -1302,7 +1302,7 @@ const styles = StyleSheet.create({
 		marginTop: Spacing.xs,
 	},
 
-	// Notes Tab
+	// Tab Ghi chú
 	notesTab: {
 		padding: Spacing.lg,
 	},
@@ -1363,7 +1363,7 @@ const styles = StyleSheet.create({
 		fontSize: FontSize.xs,
 	},
 
-	// Tasks Tab
+	// Tab Công việc
 	tasksTab: {
 		padding: Spacing.lg,
 	},
@@ -1424,7 +1424,7 @@ const styles = StyleSheet.create({
 		marginLeft: Spacing.sm,
 	},
 
-	// Empty state
+	// Trạng thái rỗng
 	emptyText: {
 		textAlign: "center",
 		fontSize: FontSize.sm,
@@ -1487,7 +1487,7 @@ const styles = StyleSheet.create({
 		fontSize: FontSize.sm,
 	},
 
-	// Form fields
+	// Các trường form
 	fieldLabel: {
 		fontSize: FontSize.sm,
 		fontWeight: "600",

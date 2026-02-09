@@ -20,24 +20,24 @@ class Lead extends Model
     public const STATUS_WON = 'WON';                 // Đã mua, deal chốt
     public const STATUS_LOST = 'LOST';               // Không có nhu cầu, từ chối
 
-    // Company size constants for potential value calculation
+    // Hằng số kích thước công ty để tính giá trị tiềm năng
     public const COMPANY_SIZE_SMALL = 'small';
     public const COMPANY_SIZE_MEDIUM = 'medium';
     public const COMPANY_SIZE_ENTERPRISE = 'enterprise';
 
-    // Potential value level constants
+    // Hằng số mức giá trị tiềm năng
     public const POTENTIAL_LOW = 'low';
     public const POTENTIAL_MEDIUM = 'medium';
     public const POTENTIAL_HIGH = 'high';
 
-    // Base values for potential value calculation (in VND)
+    // Giá trị cơ sở để tính giá trị tiềm năng (VNĐ)
     public const POTENTIAL_BASE_VALUES = [
-        'small' => 50000000,      // 50 million
-        'medium' => 200000000,    // 200 million
-        'enterprise' => 1000000000, // 1 billion
+        'small' => 50000000,      // 50 triệu
+        'medium' => 200000000,    // 200 triệu
+        'enterprise' => 1000000000, // 1 tỷ
     ];
 
-    // Industry multipliers
+    // Hệ số ngành nghề
     public const INDUSTRY_FACTORS = [
         'education' => 1.0,
         'retail' => 1.2,
@@ -68,7 +68,7 @@ class Lead extends Model
     protected $appends = ['potential_value_display', 'days_since_contact'];
 
     /**
-     * Calculate and return potential value based on company size and industry
+     * Tính toán và trả về giá trị tiềm năng dựa trên kích thước công ty và ngành nghề
      */
     public function calculatePotentialValue(): array
     {
@@ -81,7 +81,7 @@ class Lead extends Model
         
         $amount = (int) ($baseValue * $industryFactor);
         
-        // Determine level based on amount
+        // Xác định mức dựa trên số tiền
         if ($amount < 100000000) {
             $level = 'low';
         } elseif ($amount <= 500000000) {
@@ -94,7 +94,7 @@ class Lead extends Model
     }
 
     /**
-     * Auto-update potential value when company_size or industry changes
+     * Tự động cập nhật giá trị tiềm năng khi company_size hoặc industry thay đổi
      */
     protected static function booted(): void
     {
@@ -108,7 +108,7 @@ class Lead extends Model
     }
 
     /**
-     * Get formatted potential value display for frontend
+     * Lấy giá trị tiềm năng đã định dạng để hiển thị trên frontend
      */
     public function getPotentialValueDisplayAttribute(): ?array
     {
@@ -131,7 +131,7 @@ class Lead extends Model
     }
 
     /**
-     * Get days since last contact
+     * Lấy số ngày kể từ lần liên hệ cuối cùng
      */
     public function getDaysSinceContactAttribute(): ?int
     {

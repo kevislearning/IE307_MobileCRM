@@ -1,12 +1,12 @@
 import { Platform } from "react-native";
 import { storage } from "./storage";
 
-// TODO: Change this to your actual API URL
+// TODO: Thay đổi địa chỉ API thực tế của bạn
 const ANDROID_BASE = "http://10.0.2.2:8000/api"; // Android emulator -> host
 const LOCALHOST_BASE = "http://localhost:8000/api"; // iOS simulator / web
-const LAN_BASE = "http://192.168.1.94:8000/api"; // Physical device
+const LAN_BASE = "http://192.168.1.94:8000/api"; // Thiết bị vật lý
 
-// Use LAN_BASE for physical device (Expo Go), ANDROID_BASE for emulator
+// Sử dụng LAN_BASE cho thiết bị vật lý (Expo Go), ANDROID_BASE cho emulator
 const API_BASE_URL = LAN_BASE;
 
 interface RequestOptions {
@@ -16,7 +16,7 @@ interface RequestOptions {
 	requireAuth?: boolean;
 }
 
-// Auth failure callback - will be set by AuthContext
+// Callback khi xác thực thất bại - sẽ được thiết lập bởi AuthContext
 let onAuthFailure: (() => void) | null = null;
 
 class ApiClient {
@@ -26,7 +26,7 @@ class ApiClient {
 		this.baseUrl = baseUrl;
 	}
 
-	// Set callback for auth failure (called by AuthContext)
+	// Thiết lập callback cho xác thực thất bại (được gọi bởi AuthContext)
 	setOnAuthFailure(callback: () => void) {
 		onAuthFailure = callback;
 	}
@@ -59,11 +59,11 @@ class ApiClient {
 		try {
 			const response = await fetch(`${this.baseUrl}${endpoint}`, config);
 
-			// Handle token refresh if needed
+			// Xử lý làm mới token nếu cần
 			if (response.status === 401 && requireAuth) {
 				const refreshed = await this.refreshToken();
 				if (refreshed) {
-					// Retry the original request
+					// Thử lại request ban đầu
 					const token = await storage.getAccessToken();
 					requestHeaders["Authorization"] = `Bearer ${token}`;
 					const retryResponse = await fetch(`${this.baseUrl}${endpoint}`, {
@@ -72,7 +72,7 @@ class ApiClient {
 					});
 					return this.handleResponse<T>(retryResponse);
 				} else {
-					// Refresh failed - notify auth context
+					// Làm mới thất bại - thông báo cho auth context
 					if (onAuthFailure) {
 						onAuthFailure();
 					}
@@ -143,7 +143,7 @@ class ApiClient {
 		}
 	}
 
-	// Auth endpoints
+	// Các endpoints xác thực
 	async login(email: string, password: string) {
 		return this.request<any>("/login", {
 			method: "POST",
@@ -160,7 +160,7 @@ class ApiClient {
 		return this.request<{ user: any }>("/me");
 	}
 
-	// Password reset endpoints
+	// Các endpoints đặt lại mật khẩu
 	async sendOtp(email: string) {
 		return this.request("/forgot", {
 			method: "POST",
@@ -188,7 +188,7 @@ class ApiClient {
 	}
 
 	async changePassword(data: { current_password: string; password: string; password_confirmation: string }) {
-		// Backend expects new_password instead of password
+		// Backend yêu cầu new_password thay vì password
 		return this.request("/password/change", {
 			method: "POST",
 			body: {
@@ -198,7 +198,7 @@ class ApiClient {
 		});
 	}
 
-	// User endpoints
+	// Các endpoints User
 	async getProfile() {
 		return this.request("/me");
 	}
@@ -211,7 +211,7 @@ class ApiClient {
 	}
 
 	async getSettings() {
-		// Settings are part of user profile
+		// Cài đặt là một phần của thông tin người dùng
 		const response: any = await this.request("/me");
 		return { data: response.user };
 	}
@@ -227,7 +227,7 @@ class ApiClient {
 		return this.request("/team-members");
 	}
 
-	// Lead endpoints
+	// Các endpoints Lead
 	async getLeads(params?: Record<string, any>) {
 		const queryString = params ? "?" + new URLSearchParams(params).toString() : "";
 		return this.request(`/leads${queryString}`);
@@ -291,7 +291,7 @@ class ApiClient {
 		return this.request(`/notes/${id}`, { method: "DELETE" });
 	}
 
-	// Activity endpoints
+	// Các endpoints Activity
 	async getLeadActivities(leadId: number) {
 		return this.request(`/leads/${leadId}/activities`);
 	}
@@ -343,14 +343,14 @@ class ApiClient {
 		});
 	}
 
-	// Task endpoints
+	// Các endpoints Task
 	async getTasks(params?: Record<string, any>) {
 		const queryString = params ? "?" + new URLSearchParams(params).toString() : "";
 		return this.request(`/tasks${queryString}`);
 	}
 
 	async getGroupedTasks(params?: Record<string, any>) {
-		// Fetch all tasks and group them client-side
+		// Lấy tất cả tasks và nhóm theo phía client
 		const queryString = params ? "?" + new URLSearchParams(params).toString() : "";
 		const response: any = await this.request(`/tasks${queryString}`);
 		const tasks: any[] = response.data || [];
@@ -371,7 +371,7 @@ class ApiClient {
 			const dueDateStr = dueDate ? dueDate.toISOString().split("T")[0] : null;
 
 			if (task.status === "DONE") {
-				// Completed tasks go to their original bucket but marked as done
+				// Các task hoàn thành giữ nguyên vị trí nhưng đánh dấu đã xong
 				if (dueDateStr === todayStr) {
 					grouped.today.push(task);
 				} else if (dueDate && dueDate < today) {
@@ -439,7 +439,7 @@ class ApiClient {
 		return this.request(`/tasks/${taskId}/tags`, { method: "PUT", body: { tag_ids: tagIds } });
 	}
 
-	// Task subtasks
+	// Các subtasks của Task
 	async getTaskSubtasks(taskId: number) {
 		return this.request(`/tasks/${taskId}/subtasks`);
 	}
@@ -462,7 +462,7 @@ class ApiClient {
 		return this.request(`/subtasks/${id}`, { method: "DELETE" });
 	}
 
-	// Task templates
+	// Các mẫu Task
 	async getTaskTemplates() {
 		return this.request("/task-templates");
 	}
@@ -479,7 +479,7 @@ class ApiClient {
 		return this.request(`/task-templates/${id}`, { method: "DELETE" });
 	}
 
-	// Opportunity endpoints
+	// Các endpoints Opportunity
 	async getOpportunities(params?: Record<string, any>) {
 		const queryString = params ? "?" + new URLSearchParams(params).toString() : "";
 		return this.request(`/opportunities${queryString}`);
@@ -525,7 +525,7 @@ class ApiClient {
 		return this.request(`/opportunity-line-items/${id}`, { method: "DELETE" });
 	}
 
-	// Notification endpoints
+	// Các endpoints Notification
 	async getNotifications(params?: Record<string, any>) {
 		const queryString = params ? "?" + new URLSearchParams(params).toString() : "";
 		return this.request(`/notifications${queryString}`);

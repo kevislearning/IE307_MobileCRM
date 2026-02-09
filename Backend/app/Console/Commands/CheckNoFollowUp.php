@@ -11,33 +11,33 @@ use Carbon\Carbon;
 class CheckNoFollowUp extends Command
 {
     /**
-     * The name and signature of the console command.
+     * Chữ ký của console command
      *
      * @var string
      */
     protected $signature = 'crm:check-no-follow-up';
 
     /**
-     * The console command description.
+     * Mô tả command
      *
      * @var string
      */
     protected $description = 'Check for leads without follow-up and overdue tasks, then send notifications';
 
     /**
-     * Execute the console command.
+     * Thực thi command
      */
     public function handle()
     {
         $this->info('Checking for no follow-up leads and overdue tasks...');
 
-        // 1. Check overdue tasks
+        // 1. check task quá hạn
         $this->checkOverdueTasks();
 
-        // 2. Check leads with status "CARING" - no activity for 7 days
+        // 2. lead trạng thái "caring" - không hoạt động 7 ngày
         $this->checkCaringLeadsNoActivity();
 
-        // 3. Check leads with status "LEAD" - no activity for 3 days
+        // 3. lead trạng thái "lead" - không hoạt động 3 ngày
         $this->checkNewLeadsNoActivity();
 
         $this->info('Done checking no follow-up notifications.');
@@ -46,7 +46,7 @@ class CheckNoFollowUp extends Command
     }
 
     /**
-     * Check for overdue tasks and notify assigned users
+     * Kiểm tra các task quá hạn và thông báo cho user được gán
      */
     protected function checkOverdueTasks()
     {
@@ -57,7 +57,7 @@ class CheckNoFollowUp extends Command
         $notificationCount = 0;
 
         foreach ($overdueTasks as $task) {
-            // Check if we already sent notification today for this task
+            // Kiểm tra xem đã gửi thông báo hôm nay cho task này chưa
             $existingNotification = Notification::where('user_id', $task->assigned_to)
                 ->where('type', Notification::TYPE_TASK_OVERDUE)
                 ->whereDate('created_at', now()->toDateString())
@@ -86,13 +86,13 @@ class CheckNoFollowUp extends Command
     }
 
     /**
-     * Check leads with status "CARING" that have no activity for 7 days
+     * Kiểm tra các lead có trạng thái "CARING" không có hoạt động trong 7 ngày
      */
     protected function checkCaringLeadsNoActivity()
     {
         $sevenDaysAgo = now()->subDays(7);
 
-        // Leads with status CARING and no activity for 7 days
+        // Các lead có trạng thái CARING và không hoạt động trong 7 ngày
         $leads = Lead::where('status', Lead::STATUS_CARING)
             ->where(function ($query) use ($sevenDaysAgo) {
                 $query->whereNull('last_activity_at')
@@ -109,7 +109,7 @@ class CheckNoFollowUp extends Command
                 continue;
             }
 
-            // Check if we already sent notification today for this lead
+            // Kiểm tra xem đã gửi thông báo hôm nay cho lead này chưa
             $existingNotification = Notification::where('user_id', $assignedTo)
                 ->where('type', Notification::TYPE_NO_FOLLOW_UP)
                 ->whereDate('created_at', now()->toDateString())
@@ -140,13 +140,13 @@ class CheckNoFollowUp extends Command
     }
 
     /**
-     * Check leads with status "LEAD" that have no activity for 3 days
+     * Kiểm tra các lead có trạng thái "LEAD" không có hoạt động trong 3 ngày
      */
     protected function checkNewLeadsNoActivity()
     {
         $threeDaysAgo = now()->subDays(3);
 
-        // Leads with status LEAD and no activity for 3 days
+        // Các lead có trạng thái LEAD và không hoạt động trong 3 ngày
         $leads = Lead::where('status', Lead::STATUS_LEAD)
             ->where(function ($query) use ($threeDaysAgo) {
                 $query->whereNull('last_activity_at')
@@ -163,7 +163,7 @@ class CheckNoFollowUp extends Command
                 continue;
             }
 
-            // Check if we already sent notification today for this lead
+            // Kiểm tra xem đã gửi thông báo hôm nay cho lead này chưa
             $existingNotification = Notification::where('user_id', $assignedTo)
                 ->where('type', Notification::TYPE_NO_FOLLOW_UP)
                 ->whereDate('created_at', now()->toDateString())

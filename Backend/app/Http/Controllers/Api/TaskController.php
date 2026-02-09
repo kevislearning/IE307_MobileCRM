@@ -26,7 +26,7 @@ class TaskController extends Controller
 
         /** @var \App\Models\User $user */
         if ($user->isAdmin()) {
-            // no filter
+            // không lọc
         } elseif ($user->isOwner()) {
             $teamIds = $user->teamMembers()->pluck('id')->toArray();
             $query->where(function($q) use ($user, $teamIds) {
@@ -80,9 +80,9 @@ class TaskController extends Controller
         $user = Auth::user();
         $data = $request->validated();
 
-        // Manager can assign to others, staff can only assign to self
+        // Manager có thể giao cho người khác, staff chỉ có thể giao cho mình
         if ($user->isOwner() && !empty($data['assigned_to'])) {
-            // Keep the assigned_to from request
+            // Giữ assigned_to từ request
         } elseif (!$user->isAdmin()) {
             $data['assigned_to'] = $user->id;
         } elseif (empty($data['assigned_to'])) {
@@ -95,7 +95,7 @@ class TaskController extends Controller
             $data['completed_at'] = now();
         }
 
-        // Set team_id from lead if available
+        // Đặt team_id từ lead nếu có
         if (!empty($data['lead_id'])) {
             $lead = Lead::find($data['lead_id']);
             if ($lead) {
@@ -112,7 +112,7 @@ class TaskController extends Controller
         }
         $this->logHistory($task, $user->id, 'created', $data);
 
-        // Create notification for task assignment (if assigned to different user)
+        // Tạo thông báo giao công việc (nếu giao cho user khác)
         $assignedTo = $data['assigned_to'];
         if ($assignedTo && $assignedTo != $user->id) {
             try {
@@ -128,12 +128,12 @@ class TaskController extends Controller
                     ],
                 ]);
             } catch (\Exception $e) {
-                // Log the error but don't fail the task creation
+                // Ghi log lỗi nhưng không fail việc tạo task
                 \Log::warning('Failed to create task assignment notification: ' . $e->getMessage());
             }
         }
 
-        // Create activity for task assignment if lead_id exists
+        // Tạo activity cho việc giao công việc nếu có lead_id
         if (!empty($data['lead_id'])) {
             $assignedUser = $task->assignedUser;
             Activity::create([
@@ -145,7 +145,7 @@ class TaskController extends Controller
                 'happened_at' => now(),
             ]);
 
-            // Update lead's last_activity_at
+            // Cập nhật last_activity_at của lead
             $lead = Lead::find($data['lead_id']);
             if ($lead) {
                 $lead->update(['last_activity_at' => now()]);
@@ -175,9 +175,9 @@ class TaskController extends Controller
         $tagIds = $data['tag_ids'] ?? null;
         unset($data['tag_ids']);
 
-        // Check if user is trying to mark task as completed
+        // Kiểm tra nếu user đang đánh dấu task hoàn thành
         if (($data['status'] ?? null) === Task::STATUS_DONE && $task->status !== Task::STATUS_DONE) {
-            // Only assigned user can mark task as completed
+            // Chỉ user được giao mới có thể đánh dấu task hoàn thành
             $this->authorize('complete', $task);
             $data['completed_at'] = now();
         }

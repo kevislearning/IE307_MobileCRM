@@ -45,8 +45,8 @@ class User extends Authenticatable
     }
 
     /**
-     * Check if user is a manager (admin or owner)
-     * Alias method for frontend compatibility
+     * Kiểm tra xem user có phải là manager (admin hoặc owner) không
+     * Phương thức alias để tương thích với frontend
      */
     public function isManager(): bool
     {
@@ -54,8 +54,8 @@ class User extends Authenticatable
     }
 
     /**
-     * Check if user is a sales staff
-     * Alias method for frontend compatibility
+     * Kiểm tra xem user có phải là nhân viên bán hàng không
+     * Phương thức alias để tương thích với frontend
      */
     public function isSales(): bool
     {
@@ -68,7 +68,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the manager of this user (direct manager)
+     * Lấy manager của user này (manager trực tiếp)
      */
     public function manager(): BelongsTo
     {
@@ -76,7 +76,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Get all users managed by this user (for backwards compatibility)
+     * Lấy tất cả user được quản lý bởi user này (để tương thích ngược)
      */
     public function teamMembers(): HasMany
     {
@@ -84,7 +84,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the team this user belongs to
+     * Lấy team mà user này thuộc về
      */
     public function team(): BelongsTo
     {
@@ -92,7 +92,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the team managed by this user (if they are a manager)
+     * Lấy team được quản lý bởi user này (nếu họ là manager)
      */
     public function managedTeam(): HasMany
     {
@@ -100,12 +100,12 @@ class User extends Authenticatable
     }
 
     /**
-     * Get team members through team (for managers)
+     * Lấy thành viên team thông qua team (cho managers)
      */
     public function getTeamSalesMembers()
     {
         if ($this->isOwner()) {
-            // Get all staff in the same team
+            // Lấy tất cả staff trong cùng team
             return User::where('team_id', $this->team_id)
                 ->where('role', self::STAFF)
                 ->get();

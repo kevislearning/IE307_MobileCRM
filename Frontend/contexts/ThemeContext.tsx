@@ -21,10 +21,10 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 	const [theme, setThemeState] = useState<ThemeOption>("system");
 	const [isLoading, setIsLoading] = useState(true);
 
-	// Calculate actual color scheme based on theme preference
+	// Tính toán color scheme thực tế dựa trên thiết lập giao diện
 	const colorScheme: ColorScheme = theme === "system" ? systemColorScheme ?? "light" : theme;
 
-	// Load theme from storage on mount
+	// Tải theme từ storage khi khởi tạo
 	useEffect(() => {
 		loadTheme();
 	}, []);
@@ -62,11 +62,11 @@ export function useTheme() {
 	return context;
 }
 
-// Custom hook that returns the current color scheme based on user preference
+// Custom hook trả về color scheme hiện tại dựa trên thiết lập của người dùng
 export function useAppColorScheme(): ColorScheme {
 	const context = useContext(ThemeContext);
 	if (context === undefined) {
-		// Fallback to system color scheme if not in provider
+		// Fallback về system color scheme nếu không trong provider
 		const systemColorScheme = useSystemColorScheme();
 		return systemColorScheme ?? "light";
 	}

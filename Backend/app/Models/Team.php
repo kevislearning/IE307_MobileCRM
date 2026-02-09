@@ -24,7 +24,7 @@ class Team extends Model
     ];
 
     /**
-     * Get the manager of the team
+     * Lấy manager của team
      */
     public function manager(): BelongsTo
     {
@@ -37,7 +37,7 @@ class Team extends Model
     }
 
     /**
-     * Get all members of the team (including manager)
+     * Lấy tất cả thành viên của team (bao gồm manager)
      */
     public function members(): HasMany
     {
@@ -45,7 +45,7 @@ class Team extends Model
     }
 
     /**
-     * Get all sales staff in the team (excluding manager)
+     * Lấy tất cả nhân viên bán hàng trong team (không bao gồm manager)
      */
     public function salesMembers(): HasMany
     {
@@ -53,7 +53,7 @@ class Team extends Model
     }
 
     /**
-     * Get all leads assigned to this team
+     * Lấy tất cả leads được giao cho team này
      */
     public function leads(): HasMany
     {
@@ -61,7 +61,7 @@ class Team extends Model
     }
 
     /**
-     * Get all tasks for this team
+     * Lấy tất cả tasks của team này
      */
     public function tasks(): HasMany
     {

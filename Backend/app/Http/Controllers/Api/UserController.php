@@ -17,8 +17,8 @@ class UserController extends Controller
     }
 
     /**
-     * Get team members for the current manager/owner
-     * Returns all staff members that the manager can assign leads to
+     * Lấy danh sách thành viên team cho manager/owner hiện tại
+     * Trả về tất cả staff mà manager có thể giao leads
      */
     public function teamMembers()
     {
@@ -29,16 +29,16 @@ class UserController extends Controller
             abort(401, 'Unauthorized');
         }
 
-        // Admin can see all staff
+        // Admin có thể xem tất cả staff
         if ($user->isAdmin()) {
             $members = User::where('role', 'staff')->get();
         } elseif ($user->isOwner()) {
-            // Manager/Owner sees staff in their team
+            // Manager/Owner xem staff trong team của họ
             $members = User::where('team_id', $user->team_id)
                 ->where('role', 'staff')
                 ->get();
         } else {
-            // Staff only sees themselves
+            // Staff chỉ xem chính mình
             $members = collect([$user]);
         }
 

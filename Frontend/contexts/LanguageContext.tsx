@@ -20,7 +20,7 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
 	const [language, setLanguageState] = useState<Language>("vi");
 	const [isLoaded, setIsLoaded] = useState(false);
 
-	// Load saved language on mount
+	// Tải ngôn ngữ đã lưu khi khởi tạo
 	useEffect(() => {
 		loadLanguage();
 	}, []);
@@ -55,7 +55,7 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
 		[language]
 	);
 
-	// Wait for language to be loaded before rendering
+	// Chờ ngôn ngữ được tải xong trước khi render
 	if (!isLoaded) {
 		return null;
 	}
@@ -71,7 +71,7 @@ export function useLanguage() {
 	return context;
 }
 
-// Custom hook for translations only
+// Custom hook chỉ dùng cho dịch thuật
 export function useTranslation() {
 	const { t } = useLanguage();
 	return { t };

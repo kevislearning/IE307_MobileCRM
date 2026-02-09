@@ -13,7 +13,7 @@ use Carbon\Carbon;
 class PasswordResetController extends Controller
 {
     /**
-     * Send OTP to user's email
+     * Gửi OTP đến email của người dùng
      */
     public function sendOtp(Request $request)
     {
@@ -21,40 +21,40 @@ class PasswordResetController extends Controller
             'email' => 'required|email|exists:users,email'
         ]);
 
-        // Invalidate any existing OTPs
+        // Vô hiệu hóa các OTP hiện có
         PasswordReset::where('email', $request->email)
             ->where('used', false)
             ->update(['used' => true]);
 
-        // Generate 6-digit OTP
+        // Tạo OTP 6 chữ số
         $otp = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
 
-        // Create password reset record
+        // Tạo bản ghi reset mật khẩu
         PasswordReset::create([
             'email' => $request->email,
             'otp' => $otp,
             'expires_at' => Carbon::now()->addMinutes(10)
         ]);
 
-        // Send OTP via email (simplified - in production use proper mail templates)
+        // Gửi OTP qua email (đơn giản - trong production nên dùng mail templates đầy đủ)
         try {
             Mail::raw("Mã OTP của bạn là: {$otp}. Mã có hiệu lực trong 10 phút.", function ($message) use ($request) {
                 $message->to($request->email)
                     ->subject('Khôi phục mật khẩu - CRM');
             });
         } catch (\Exception $e) {
-            // Log error but still return success (for development)
+            // Ghi log lỗi nhưng vẫn trả về thành công (cho development)
             \Log::error('Failed to send OTP email: ' . $e->getMessage());
         }
 
         return response()->json([
             'message' => 'OTP đã được gửi đến email của bạn',
-            'otp' => app()->environment('local') ? $otp : null // Only show OTP in local/dev
+            'otp' => app()->environment('local') ? $otp : null // Chỉ hiển thị OTP trong local/dev
         ]);
     }
 
     /**
-     * Verify OTP
+     * Xác minh OTP
      */
     public function verifyOtp(Request $request)
     {
@@ -82,7 +82,7 @@ class PasswordResetController extends Controller
     }
 
     /**
-     * Reset password with OTP
+     * Đặt lại mật khẩu với OTP
      */
     public function resetPassword(Request $request)
     {
@@ -91,7 +91,7 @@ class PasswordResetController extends Controller
             'password' => 'required|string|min:6|confirmed'
         ]);
 
-        // Decode reset token
+        // Giải mã reset token
         $decoded = base64_decode($request->reset_token);
         $parts = explode('|', $decoded);
 
@@ -113,14 +113,14 @@ class PasswordResetController extends Controller
             ], 400);
         }
 
-        // Update user password
+        // Cập nhật mật khẩu user
         $user = User::where('email', $email)->first();
         $user->update([
             'password' => Hash::make($request->password),
             'must_change_password' => false
         ]);
 
-        // Mark OTP as used
+        // Đánh dấu OTP đã sử dụng
         $passwordReset->markAsUsed();
 
         return response()->json([
@@ -129,7 +129,7 @@ class PasswordResetController extends Controller
     }
 
     /**
-     * Change password (for logged in users)
+     * Đổi mật khẩu (cho user đã đăng nhập)
      */
     public function changePassword(Request $request)
     {

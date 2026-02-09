@@ -29,7 +29,7 @@ export const Colors = {
 		tabIconDefault: "#687076",
 		tabIconSelected: "#1E3A5F",
 
-		// Status colors
+		// Màu trạng thái
 		statusLead: "#6B7280",
 		statusContacted: "#3B82F6",
 		statusCaring: "#F59E0B",
@@ -60,7 +60,7 @@ export const Colors = {
 		tabIconDefault: "#9BA1A6",
 		tabIconSelected: "#3B82F6",
 
-		// Status colors
+		// Màu trạng thái
 		statusLead: "#9CA3AF",
 		statusContacted: "#60A5FA",
 		statusCaring: "#FBBF24",

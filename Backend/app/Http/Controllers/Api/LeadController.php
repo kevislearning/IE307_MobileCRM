@@ -33,9 +33,9 @@ class LeadController extends Controller
 
         $query = Lead::with(['owner','assignee']);
 
-        // Role-based visibility
+        // Phân quyền hiển thị theo role
         if ($user->isAdmin()) {
-            // see all
+            // xem tất cả
         } elseif ($user->isOwner()) {
             $teamIds = $user->teamMembers()->pluck('id')->toArray();
             $query->where(function($q) use ($user, $teamIds) {
@@ -50,7 +50,7 @@ class LeadController extends Controller
             });
         }
 
-        // Filters
+        // Bộ lọc
         $query->search($request->q ?? $request->search);
         if ($status = $request->status) {
             $query->where('status', $status);
@@ -114,7 +114,7 @@ class LeadController extends Controller
         /** @var \App\Models\User $user */
         $user = Auth::user();
 
-        // blocked contact check
+        // Kiểm tra contact bị chặn
         if (!empty($data['phone_number']) && BlockedContact::where('phone', $data['phone_number'])->exists()) {
             return response()->json(['message' => 'Phone is blocked'], 409);
         }
@@ -142,7 +142,7 @@ class LeadController extends Controller
         $data['owner_id'] = $user->isAdmin() && isset($data['owner_id'])
             ? $data['owner_id']
             : $user->id;
-        // Handle assignment: only admin/manager can assign to others
+        // Xử lý giao việc: chỉ admin/manager mới có thể giao cho người khác
         if (!empty($data['assigned_to']) && !($user->isAdmin() || $user->isOwner())) {
             $data['assigned_to'] = $user->id;
         }
@@ -175,7 +175,7 @@ class LeadController extends Controller
         $oldStatus = $lead->status;
         $lead->update($request->validated());
 
-        // Notify on status change
+        // Thông báo khi thay đổi trạng thái
         if ($request->filled('status') && $lead->status !== $oldStatus) {
             $targets = collect([$lead->assigned_to, $lead->owner_id])->filter()->unique();
             foreach ($targets as $userId) {
@@ -312,7 +312,7 @@ class LeadController extends Controller
 
         $query = Lead::query();
         if ($user->isAdmin()) {
-            // no filter
+            // không lọc
         } elseif ($user->isOwner()) {
             $teamIds = $user->teamMembers()->pluck('id')->toArray();
             $query->where(function($q) use ($user, $teamIds) {
@@ -349,7 +349,7 @@ class LeadController extends Controller
         $targetId = (int) $request->assigned_to;
 
         if (!$user->isAdmin()) {
-            // Manager can assign to team members or self
+            // Manager có thể giao cho thành viên trong team hoặc cho chính mình
             $teamIds = $user->teamMembers()->pluck('id')->toArray();
             if (!in_array($targetId, $teamIds) && $targetId !== $user->id) {
                 abort(403, 'Not allowed to assign this lead.');
@@ -406,7 +406,7 @@ class LeadController extends Controller
 
         $source = Lead::findOrFail($request->source_lead_id);
 
-        // move activities/tasks/attachments
+        // Di chuyển activities/tasks/attachments
         \App\Models\Activity::where('lead_id', $source->id)->update(['lead_id' => $lead->id]);
         \App\Models\Task::where('lead_id', $source->id)->update(['lead_id' => $lead->id]);
         \App\Models\Attachment::where('lead_id', $source->id)->update(['lead_id' => $lead->id]);

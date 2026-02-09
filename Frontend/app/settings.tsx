@@ -33,7 +33,7 @@ export default function SettingsScreen() {
 			const response = await api.getSettings();
 			const settings = (response as any).data;
 			setNotificationsEnabled(settings.notifications_enabled ?? true);
-			// Sync theme from backend if different
+			// Đồng bộ theme từ backend nếu khác
 			if (settings.theme && settings.theme !== theme) {
 				await setTheme(settings.theme);
 			}
@@ -61,12 +61,12 @@ export default function SettingsScreen() {
 		const oldTheme = theme;
 		setSaving(true);
 		try {
-			// Update local theme immediately for instant feedback
+			// Cập nhật theme cục bộ ngay lập tức để phản hồi nhanh
 			await setTheme(newTheme);
-			// Sync to backend
+			// Đồng bộ với backend
 			await api.updateSettings({ theme: newTheme });
 		} catch (error: any) {
-			// Revert on error
+			// Hoàn tác nếu có lỗi
 			await setTheme(oldTheme);
 			Alert.alert(t("common.error"), error.message || t("settings.cannotUpdateTheme"));
 		} finally {

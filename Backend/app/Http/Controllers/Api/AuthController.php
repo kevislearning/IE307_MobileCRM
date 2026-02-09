@@ -32,7 +32,7 @@ class AuthController extends Controller
 
         $tokens = $this->issueTokens($user);
         
-        // Log the token for testing purposes
+        // Ghi log token để phục vụ kiểm thử
         Log::info('Login successful for user: ' . $user->email);
         Log::info('Access Token: ' . $tokens['access_token']);
 
@@ -70,12 +70,12 @@ class AuthController extends Controller
         
         $userData = $user->toArray();
         
-        // Add team info for display
+        // Thêm thông tin team để hiển thị
         if ($user->team) {
             $userData['team_name'] = $user->team->name;
         }
         
-        // For managers, add member count
+        // Với managers, thêm số lượng thành viên
         if ($user->isOwner() && $user->team_id) {
             $userData['team_member_count'] = User::where('team_id', $user->team_id)
                 ->where('role', 'staff')

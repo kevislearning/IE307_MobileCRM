@@ -19,7 +19,7 @@ class Controller extends BaseController
     }
 
     /**
-     * Check admin
+     * Kiểm tra admin
      */
     protected function isAdmin(): bool
     {

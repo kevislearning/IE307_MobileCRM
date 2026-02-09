@@ -1,14 +1,14 @@
-// expo-notifications temporarily disabled
+// expo-notifications tạm thời vô hiệu hóa
 import { api } from "@/services/api";
 
-// Stub: notifications disabled
+// Stub: thông báo đã vô hiệu hóa
 export const initNotifications = async () => {
 	console.log("[Notifications] expo-notifications temporarily disabled");
 	return { granted: false };
 };
 
 export const syncSmartReminders = async () => {
-	// expo-notifications temporarily disabled - only trigger backend reminders
+	// expo-notifications tạm thời vô hiệu hóa - chỉ kích hoạt nhắc nhở từ backend
 	try {
 		await Promise.allSettled([api.triggerTaskReminders(), api.triggerFollowUpDue()]);
 	} catch (error) {

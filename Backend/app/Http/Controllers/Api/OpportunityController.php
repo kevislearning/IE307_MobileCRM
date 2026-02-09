@@ -27,18 +27,18 @@ class OpportunityController extends Controller
 
         $query = Opportunity::with(['owner', 'lead']);
         
-        // Role-based visibility
+        // Phân quyền hiển thị theo role
         if ($user->isAdmin()) {
-            // Admin sees all
+            // Admin xem tất cả
         } elseif ($user->isOwner()) {
-            // Manager sees own + team members' opportunities
+            // Manager xem của mình + của thành viên trong team
             $teamMemberIds = $user->teamMembers()->pluck('id')->toArray();
             $query->where(function($q) use ($user, $teamMemberIds) {
                 $q->where('owner_id', $user->id)
                   ->orWhereIn('owner_id', $teamMemberIds);
             });
         } else {
-            // Other users see only their own
+            // Các user khác chỉ xem của mình
             $query->where('owner_id', $user->id);
         }
         
@@ -124,11 +124,11 @@ class OpportunityController extends Controller
 
         $query = Opportunity::query();
         
-        // Role-based visibility
+        // Phân quyền hiển thị theo role
         if ($user->isAdmin()) {
-            // Admin sees all
+            // Admin xem tất cả
         } elseif ($user->isOwner()) {
-            // Manager sees own + team members' opportunities
+            // Manager xem của mình + của thành viên trong team
             $teamMemberIds = $user->teamMembers()->pluck('id')->toArray();
             $query->where(function($q) use ($user, $teamMemberIds) {
                 $q->where('owner_id', $user->id)
@@ -155,11 +155,11 @@ class OpportunityController extends Controller
 
         $query = Opportunity::query();
         
-        // Role-based visibility
+        // Phân quyền hiển thị theo role
         if ($user->isAdmin()) {
-            // Admin sees all
+            // Admin xem tất cả
         } elseif ($user->isOwner()) {
-            // Manager sees own + team members' opportunities
+            // Manager xem của mình + của thành viên trong team
             $teamMemberIds = $user->teamMembers()->pluck('id')->toArray();
             $query->where(function($q) use ($user, $teamMemberIds) {
                 $q->where('owner_id', $user->id)
@@ -180,7 +180,7 @@ class OpportunityController extends Controller
 
     private function defaultProbability(?string $stage): int
     {
-        // Stage-based probability mapping (fixed, not user-editable)
+        // Ánh xạ xác suất theo giai đoạn (cố định, không chỉnh sửa được)
         // New=10%, Qualified=30%, Proposal=50%, Negotiation=70%, Won=100%, Lost=0%
         return match ($stage) {
             'NEW' => 10,

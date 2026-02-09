@@ -15,7 +15,7 @@ export const translations = {
 
 export type TranslationKeys = typeof vi;
 
-// Helper function to get nested translation value
+// Hàm hỗ trợ lấy giá trị dịch lồng nhau
 export function getTranslation(translations: TranslationKeys, key: string, params?: Record<string, string | number>): string {
 	const keys = key.split(".");
 	let result: unknown = translations;
@@ -24,7 +24,7 @@ export function getTranslation(translations: TranslationKeys, key: string, param
 		if (result && typeof result === "object" && k in result) {
 			result = (result as Record<string, unknown>)[k];
 		} else {
-			return key; // Return key if translation not found
+			return key; // Trả về key nếu không tìm thấy bản dịch
 		}
 	}
 
@@ -32,7 +32,7 @@ export function getTranslation(translations: TranslationKeys, key: string, param
 		return key;
 	}
 
-	// Replace parameters like {{count}} with actual values
+	// Thay thế tham số như {{count}} với giá trị thực tế
 	if (params) {
 		return result.replace(/\{\{(\w+)\}\}/g, (_, paramKey) => {
 			return params[paramKey]?.toString() ?? `{{${paramKey}}}`;

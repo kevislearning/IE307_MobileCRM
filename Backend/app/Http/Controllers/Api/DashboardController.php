@@ -21,7 +21,7 @@ class DashboardController extends Controller
         /** @var User $user */
         $user = Auth::user();
 
-        // Cache dashboard data for 5 minutes
+        // Cache dữ liệu dashboard trong 5 phút
         $cacheKey = "dashboard_metrics_{$user->id}";
         
         return Cache::remember($cacheKey, 300, function () use ($user) {
@@ -37,7 +37,7 @@ class DashboardController extends Controller
         $notificationQuery = Notification::where('user_id', $user->id);
 
         if ($user->isAdmin()) {
-            // no restrictions
+            // không giới hạn
         } elseif ($user->isOwner()) {
             $teamIds = $user->teamMembers()->pluck('id')->toArray();
             $leadQuery->where(function($q) use ($user, $teamIds) {
@@ -63,25 +63,25 @@ class DashboardController extends Controller
 
         $today = now()->toDateString();
 
-        // === SECTION 1: OVERVIEW ===
-        // Total pipeline value (exclude lost)
+        // === PHẦN 1: TỔNG QUAN ===
+        // Tổng giá trị pipeline (trừ lost)
         $totalPipelineValue = (clone $oppQuery)
             ->whereNotIn('stage', ['LOST'])
             ->sum('estimated_value');
 
-        // Forecast revenue (sum of expected_revenue)
+        // Doanh thu dự báo (tổng expected_revenue)
         $forecastRevenue = (clone $oppQuery)
             ->whereNotIn('stage', ['LOST'])
             ->sum('expected_revenue');
 
-        // Forecast this month
+        // Dự báo tháng này
         $forecastThisMonth = (clone $oppQuery)
             ->whereNotIn('stage', ['LOST'])
             ->whereMonth('expected_close_date', now()->month)
             ->whereYear('expected_close_date', now()->year)
             ->sum('expected_revenue');
 
-        // === SECTION 2: PIPELINE BY STAGE ===
+        // === PHẦN 2: PIPELINE THEO GIAI ĐOẠN ===
         $pipelineByStage = (clone $oppQuery)
             ->whereNotIn('stage', ['LOST'])
             ->select('stage')
@@ -99,7 +99,7 @@ class DashboardController extends Controller
                 ];
             });
 
-        // === SECTION 3: BOTTLENECK DETECTION ===
+        // === PHẦN 3: PHÁT HIỆN ĐIỂM NGHẼ ===
         $bottleneck = (clone $oppQuery)
             ->whereNotIn('stage', ['WON', 'LOST'])
             ->whereNotNull('stage_updated_at')
@@ -116,7 +116,7 @@ class DashboardController extends Controller
             'total_deals' => (int) $bottleneck->total_deals,
         ] : null;
 
-        // === SECTION 4: SALES PERFORMANCE ===
+        // === PHẦN 4: HIỆU SUẤT BÁN HÀNG ===
         $salesPerformance = User::where('role', 'staff')
             ->get()
             ->map(function ($sales) use ($oppQuery) {
@@ -127,7 +127,7 @@ class DashboardController extends Controller
                 $revenue = (clone $salesOppQuery)->where('stage', 'WON')->sum('estimated_value');
                 $winRate = $totalDeals > 0 ? round(($wonDeals / $totalDeals) * 100, 1) : 0;
                 
-                // Average deal time (for won deals with closed_at)
+                // Thời gian trung bình chốt deal (cho deals đã thắng có closed_at)
                 $avgDealTime = (clone $salesOppQuery)
                     ->where('stage', 'WON')
                     ->whereNotNull('stage_updated_at')
@@ -148,21 +148,21 @@ class DashboardController extends Controller
             ->sortByDesc('revenue')
             ->values();
 
-        // === ADDITIONAL METRICS (kept for compatibility) ===
+        // === CÁC CHỈ SỐ BỔ SUNG (để tương thích ngược) ===
         $staleDate = now()->subDays(7);
 
-        // Team member count for manager
+        // Số lượng thành viên team cho manager
         $teamMemberCount = 0;
         if ($user->isOwner()) {
             $teamMemberCount = User::where('manager_id', $user->id)->count();
         }
 
-        // Open deals count
+        // Số lượng deals đang mở
         $openDealsCount = (clone $oppQuery)
             ->whereNotIn('stage', ['WON', 'LOST'])
             ->count();
 
-        // Leads no follow-up (more than 7 days)
+        // Leads không follow-up (hơn 7 ngày)
         $leadsNoFollowUp = (clone $leadQuery)
             ->whereNotIn('status', [Lead::STATUS_WON, Lead::STATUS_LOST])
             ->where(function($q) use ($staleDate) {
@@ -171,7 +171,7 @@ class DashboardController extends Controller
             })
             ->count();
 
-        // Conversion rate (WON / (WON + LOST))
+        // Tỷ lệ chuyển đổi (WON / (WON + LOST))
         $wonCount = (clone $leadQuery)->where('status', Lead::STATUS_WON)->count();
         $lostCount = (clone $leadQuery)->where('status', Lead::STATUS_LOST)->count();
         $conversionRate = ($wonCount + $lostCount) > 0 
@@ -200,7 +200,7 @@ class DashboardController extends Controller
             'expected_revenue' => (float) $forecastRevenue,
             'conversion_rate' => $conversionRate,
             
-            // Legacy metrics (for backward compatibility)
+            // Các chỉ số cũ (để tương thích ngược)
             'total_leads' => (clone $leadQuery)->count(),
             'leads_total' => (clone $leadQuery)->count(),
             'leads_uncontacted' => (clone $leadQuery)->whereNull('last_activity_at')->count(),
@@ -211,7 +211,7 @@ class DashboardController extends Controller
             'overdue_tasks' => (clone $taskQuery)->whereDate('due_date', '<', $today)->where('status', '!=', Task::STATUS_DONE)->count(),
             'tasks_overdue' => (clone $taskQuery)->whereDate('due_date', '<', $today)->where('status', '!=', Task::STATUS_DONE)->count(),
             'notifications_unread' => $notificationQuery->where('is_read', false)->count(),
-            // Follow-up today based on tasks due today
+            // Follow-up hôm nay dựa trên tasks đến hạn hôm nay
             'followup_today' => (clone $taskQuery)
                 ->whereDate('due_date', $today)
                 ->where('status', '!=', Task::STATUS_DONE)

@@ -16,14 +16,14 @@ class NoteController extends Controller
 
     public function index(Request $request, Lead $lead)
     {
-        // Use LeadPolicy to check access
+        // Sử dụng LeadPolicy để kiểm tra quyền truy cập
         $this->authorize('view', $lead);
 
         /** @var \App\Models\User $user */
         $user = Auth::user();
         $query = $lead->notes();
 
-        // If user is sales (staff), only show normal notes (not manager notes)
+        // Nếu user là sales (staff), chỉ hiển thị notes thường (không phải note của manager)
         if ($user->isStaff()) {
             $query->normal();
         }
@@ -44,10 +44,10 @@ class NoteController extends Controller
         $user = Auth::user();
         $lead = Lead::findOrFail($request->lead_id);
 
-        // Use LeadPolicy to check access
+        // Sử dụng LeadPolicy để kiểm tra quyền truy cập
         $this->authorize('view', $lead);
 
-        // Only managers (admin/owner) can create manager notes
+        // Chỉ managers (admin/owner) mới có thể tạo manager notes
         $type = Note::TYPE_NORMAL;
         if ($user->isManager() && $request->type === Note::TYPE_MANAGER) {
             $type = Note::TYPE_MANAGER;
@@ -61,7 +61,7 @@ class NoteController extends Controller
             'type' => $type
         ]);
 
-        // Create activity for note
+        // Tạo activity cho note
         Activity::create([
             'type' => 'NOTE',
             'title' => $request->title,
@@ -71,7 +71,7 @@ class NoteController extends Controller
             'happened_at' => now(),
         ]);
 
-        // Update lead's last_activity_at
+        // Cập nhật last_activity_at của lead
         $lead->update(['last_activity_at' => now()]);
 
         return response()->json($note->load('user'), 201);
@@ -82,7 +82,7 @@ class NoteController extends Controller
         /** @var \App\Models\User $user */
         $user = Auth::user();
 
-        // Only note owner or manager can delete
+        // Chỉ chủ note hoặc manager mới có thể xóa
         if (!$user->isManager() && $note->user_id !== $user->id) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }

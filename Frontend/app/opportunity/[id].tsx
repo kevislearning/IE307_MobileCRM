@@ -12,7 +12,7 @@ import { Loading, Badge, Button, TextInput } from "@/components/ui";
 
 const STAGE_OPTIONS: OpportunityStage[] = ["PROSPECTING", "PROPOSAL", "NEGOTIATION", "WON", "LOST"];
 
-// Stage to probability mapping (same as backend)
+// Bảng tương ứng giai đoạn và xác suất (giống backend)
 const STAGE_PROBABILITY: Record<OpportunityStage, number> = {
 	PROSPECTING: 20,
 	PROPOSAL: 50,
@@ -21,13 +21,13 @@ const STAGE_PROBABILITY: Record<OpportunityStage, number> = {
 	LOST: 0,
 };
 
-// Stage colors for badges
+// Màu giai đoạn cho badge
 const STAGE_COLORS: Record<OpportunityStage, string> = {
-	PROSPECTING: "#3B82F6", // Blue
-	PROPOSAL: "#F59E0B", // Orange
-	NEGOTIATION: "#8B5CF6", // Purple
-	WON: "#10B981", // Green
-	LOST: "#EF4444", // Red
+	PROSPECTING: "#3B82F6", // Xanh dương
+	PROPOSAL: "#F59E0B", // Cam
+	NEGOTIATION: "#8B5CF6", // Tím
+	WON: "#10B981", // Xanh lá
+	LOST: "#EF4444", // Đỏ
 };
 
 export default function OpportunityDetailScreen() {

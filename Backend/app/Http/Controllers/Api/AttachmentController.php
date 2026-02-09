@@ -19,13 +19,13 @@ class AttachmentController extends Controller
     {
         if ($request->lead_id) {
             $lead = Lead::findOrFail($request->lead_id);
-            // Allow any user to upload to any lead
+            // Cho phép bất kỳ user nào upload vào bất kỳ lead nào
             // $this->authorize('view', $lead);
         }
 
         if ($request->task_id) {
             $task = Task::findOrFail($request->task_id);
-            // Allow any user to upload to any task
+            // Cho phép bất kỳ user nào upload vào bất kỳ task nào
             // $this->authorize('view', $task);
         }
 
@@ -53,7 +53,7 @@ class AttachmentController extends Controller
             abort(403, 'Unauthorized to delete this attachment.');
         }
 
-        // Delete file from storage
+        // Xóa file từ storage
         \Illuminate\Support\Facades\Storage::disk('public')->delete($attachment->file_path);
 
         $attachment->delete();

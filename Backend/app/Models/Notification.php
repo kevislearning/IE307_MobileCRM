@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Notification extends Model
 {
-    // Notification types
+    // Các loại thông báo
     public const TYPE_LEAD = 'LEAD';
     public const TYPE_TASK = 'TASK';
     public const TYPE_SYSTEM = 'SYSTEM';
@@ -33,7 +33,7 @@ class Notification extends Model
     protected $appends = ['type_label'];
 
     /**
-     * Get the user that owns the notification.
+     * Lấy user sở hữu thông báo này.
      */
     public function user(): BelongsTo
     {
@@ -41,7 +41,7 @@ class Notification extends Model
     }
 
     /**
-     * Get the type label in Vietnamese.
+     * Lấy nhãn loại thông báo bằng tiếng Việt.
      */
     public function getTypeLabelAttribute(): string
     {

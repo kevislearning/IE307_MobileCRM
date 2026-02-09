@@ -35,7 +35,7 @@ class LeadRequest extends FormRequest
             'follow_up_sla_days' => 'sometimes|integer|min:1|max:365',
         ];
 
-        // full_name is required only when creating a new lead
+        // full_name chỉ bắt buộc khi tạo lead mới
         if ($this->isMethod('POST')) {
             $rules['full_name'] = 'required|string|max:255';
         }
